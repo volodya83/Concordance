@@ -44,6 +44,7 @@ public class MyArrayPhraseAdapter extends ArrayAdapter<PhraseData> {
         else lineStr = curPhrase.get_lineStart() + "";
         viewHolder.tv_line.setText(lineStr);
         String positionStr = curPhrase.get_positionStart() + "-" + curPhrase.get_positionEnd();
+        viewHolder.tv_position.setText(positionStr);
         rowView.setTag(viewHolder);
         return rowView;
     }

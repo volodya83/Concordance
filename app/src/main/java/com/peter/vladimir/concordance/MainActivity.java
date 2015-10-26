@@ -30,10 +30,11 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private static final String TAG = "MainActivity"; //peter!!!
-    private EditText et_texts_name;//Hello2!!
-    private EditText et_auth_name;//Hello3!!!
+    //TODO show 3 lines with words and phrases, and show text
+    //TODO add group and relations
+    private static final String TAG = "MainActivity";
+    private EditText et_texts_name;
+    private EditText et_auth_name;
     private EditText et_file_name;
     private DatePicker dp_publish;
     private Button btn_search;

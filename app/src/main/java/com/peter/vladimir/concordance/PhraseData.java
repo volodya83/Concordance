@@ -46,24 +46,35 @@ public class PhraseData {
 
     public ArrayList<PhraseData> cursorToArrPhrase(Cursor cursor, int[] phraseIdsArr) {
         cursor.moveToFirst();
+        int curCursor;
+        int lineStart;
+        int positionStart;
+        int curTextId;
+        int cur_id, next_id;
         ArrayList<PhraseData> phraseDataArrayList = new ArrayList<PhraseData>();
 
         for (int j; !cursor.isAfterLast(); cursor.moveToNext()) {
             if (cursor.getInt(COL_WORD_ID) == phraseIdsArr[0]) {
-                int curCursor = cursor.getPosition();
-                int lineStart = cursor.getInt(COL_LINE);
-                int positionStart = cursor.getInt(COL_POSITION);
-                int curTextId = cursor.getInt(COL_TEXT_ID);
+                curCursor = cursor.getPosition();
+                lineStart = cursor.getInt(COL_LINE);
+                positionStart= cursor.getInt(COL_POSITION);
+                curTextId = cursor.getInt(COL_TEXT_ID);
+                cur_id = cursor.getInt(COL_ROW_ID);
+
                 for (j = 1; j < phraseIdsArr.length; j++) {
                     cursor.moveToNext();
-                    if (cursor.isAfterLast() || cursor.getInt(COL_WORD_ID) != phraseIdsArr[j]) {
+                    if(cursor.isAfterLast()){
+                        break;
+                    }
+                    next_id = cursor.getInt(COL_ROW_ID);
+                    if (cursor.getInt(COL_WORD_ID) != phraseIdsArr[j] || next_id-cur_id!=1) {
                         break;
                     }
                 }
                 if (cursor.isAfterLast()) {
                     break;
                 }
-                if (j == phraseIdsArr.length && cursor.getInt(COL_TEXT_ID) == curTextId) {  //problem: need to check if words is one after two
+                if (j == phraseIdsArr.length && cursor.getInt(COL_TEXT_ID) == curTextId) {
                     phraseDataArrayList.add(new PhraseData(curTextId, lineStart, positionStart,
                             cursor.getInt(COL_LINE), cursor.getInt(COL_POSITION)));
                 }
