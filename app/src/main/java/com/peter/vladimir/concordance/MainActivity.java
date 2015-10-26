@@ -32,7 +32,7 @@ import java.util.Scanner;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "MainActivity"; //peter!!!
-    private EditText et_texts_name;
+    private EditText et_texts_name;//Hello2!!
     private EditText et_auth_name;
     private EditText et_file_name;
     private DatePicker dp_publish;
