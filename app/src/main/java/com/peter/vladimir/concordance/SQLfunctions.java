@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -367,7 +368,47 @@ public abstract class SQLfunctions {
 
         SQLfunctions._textMap = textMap;
     }
+
+    public static String getWordContext(Integer line, Integer text_id) {
+        String[] arg = new String[1];
+        arg[0] = text_id.toString();
+        String lines = "("+Integer.valueOf(line-1).toString()+","+Integer.valueOf(line).toString()+","+
+                            Integer.valueOf(line+1).toString()+")";
+        Cursor cursor = _sqLiteDatabase.rawQuery("SELECT word, word_text_type " +
+                "FROM Words JOIN Word_Text_Rel ON Words._id=Word_Text_Rel.word_id " +
+                "WHERE Word_Text_Rel.text_id=? AND Word_Text_Rel.word_text_line IN "+lines, arg);
+
+        return buildContext(cursor);
+    }
+
+
+    private static String buildContext(Cursor cursor) {
+        String str_context = "...", word = "";
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            word = cursor.getString(0);
+
+            switch (cursor.getInt(1)) {
+                case SQLfunctions.ONE_CAPITAL: {
+                    word = word.substring(0, 1).toUpperCase() + word.substring(1);
+                    break;
+                }
+                case SQLfunctions.ALL_CAPITAL: {
+                    word = word.toUpperCase();
+                    break;
+                }
+                default:
+                    break;
+            }
+            str_context = str_context + word;
+            cursor.moveToNext();
+        }
+        return str_context + "...";
+    }
+
+
 }
+
 
 
 

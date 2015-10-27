@@ -76,6 +76,22 @@
             android:id="@+id/ibtn_show_text_section"
             android:layout_weight="1.5"
             android:background="@android:drawable/ic_menu_view" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:id="@+id/lay_context">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/tv_context"
+            />
     </LinearLayout>
 
 </LinearLayout>
