@@ -372,8 +372,7 @@ public abstract class SQLfunctions {
     public static String getWordContext(Integer line, Integer text_id) {
         String[] arg = new String[1];
         arg[0] = text_id.toString();
-        String lines = "("+Integer.valueOf(line-1).toString()+","+Integer.valueOf(line).toString()+","+
-                            Integer.valueOf(line+1).toString()+")";
+        String lines = "("+(line-1)+","+line+","+(line+1)+")";
         Cursor cursor = _sqLiteDatabase.rawQuery("SELECT word, word_text_type " +
                 "FROM Words JOIN Word_Text_Rel ON Words._id=Word_Text_Rel.word_id " +
                 "WHERE Word_Text_Rel.text_id=? AND Word_Text_Rel.word_text_line IN "+lines, arg);
@@ -400,8 +399,13 @@ public abstract class SQLfunctions {
                 default:
                     break;
             }
-            str_context = str_context + word;
             cursor.moveToNext();
+            if (!cursor.isAfterLast()) {
+                if (cursor.getInt(1) != SQLfunctions.SYMBOL) {
+                    word = word + " ";
+                }
+            }
+            str_context = str_context + word;
         }
         return str_context + "...";
     }

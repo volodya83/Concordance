@@ -48,6 +48,7 @@ public class MyArrayPhraseAdapter extends ArrayAdapter<PhraseData> {
         viewHolder.tv_position.setText(positionStr);
         viewHolder.textId=curPhrase.get_text_id();
         viewHolder.position=position;
+        viewHolder.lineStart=curPhrase.get_lineStart();
         rowView.setTag(viewHolder);
         return rowView;
     }
@@ -62,8 +63,10 @@ public class MyArrayPhraseAdapter extends ArrayAdapter<PhraseData> {
         public View lay_context;
         public int position;
         public int textId;
+        public int lineStart;
 
         public ViewHolderWordData(View view) {
+
             tv_in_text_name = (TextView) view.findViewById(R.id.tv_in_text_name);
             tv_line = (TextView) view.findViewById(R.id.tv_line);
             tv_position = (TextView) view.findViewById(R.id.tv_position);
@@ -74,7 +77,7 @@ public class MyArrayPhraseAdapter extends ArrayAdapter<PhraseData> {
                 @Override
                 public void onClick(View v) {
 
-                    str_context = SQLfunctions.getWordContext(Integer.getInteger(tv_line.getText().toString()), textId);
+                    str_context = SQLfunctions.getWordContext(lineStart, textId);
                     tv_context.setText(str_context);
                     lay_context.setVisibility(View.VISIBLE);
                 }
