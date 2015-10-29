@@ -77,7 +77,7 @@ public class MyArrayPhraseAdapter extends ArrayAdapter<PhraseData> {
                 @Override
                 public void onClick(View v) {
 
-                    str_context = SQLfunctions.getWordContext(lineStart, textId);
+                    str_context = SQLfunctions.getWordPhraseContext(lineStart, textId);
                     tv_context.setText(str_context);
                     lay_context.setVisibility(View.VISIBLE);
                 }

@@ -104,6 +104,8 @@ public class MyCursorAdapter extends CursorAdapter {
             viewHolder.tv_line.setText(""+text_line);
             int word_position = cursor.getInt(COL_WORD_POSITION); //3
             viewHolder.tv_position.setText(""+word_position);
+            viewHolder.lineStart = text_line;
+            viewHolder.textId = cursor.getInt(COL_TEXT_ID);
         }
     }
 
@@ -177,12 +179,28 @@ public class MyCursorAdapter extends CursorAdapter {
         public TextView tv_line;
         public TextView tv_position;
         public ImageButton ibtn_show_text_section;
+        public String str_context;
+        public TextView tv_context;
+        public View lay_context;
+        public int lineStart, textId;
+
 
         public ViewHolderWordData(View view) {
             tv_in_text_name = (TextView) view.findViewById(R.id.tv_in_text_name);
             tv_line = (TextView) view.findViewById(R.id.tv_line);
             tv_position = (TextView) view.findViewById(R.id.tv_position);
             ibtn_show_text_section=(ImageButton)view.findViewById(R.id.ibtn_show_text_section);
+            tv_context = (TextView)view.findViewById(R.id.tv_context);
+            lay_context = view.findViewById(R.id.lay_context);
+            ibtn_show_text_section.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    str_context = SQLfunctions.getWordPhraseContext(lineStart, textId);
+                    tv_context.setText(str_context);
+                    lay_context.setVisibility(View.VISIBLE);
+                }
+            });
         }
     }
 }

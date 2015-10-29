@@ -369,7 +369,7 @@ public abstract class SQLfunctions {
         SQLfunctions._textMap = textMap;
     }
 
-    public static String getWordContext(Integer line, Integer text_id) {
+    public static String getWordPhraseContext(Integer line, Integer text_id) {
         String[] arg = new String[1];
         arg[0] = text_id.toString();
         String lines = "("+(line-1)+","+line+","+(line+1)+")";
