@@ -183,6 +183,8 @@ public class MyCursorAdapter extends CursorAdapter {
         public TextView tv_context;
         public View lay_context;
         public int lineStart, textId;
+        public ImageButton ibtn_viewText;
+
 
 
         public ViewHolderWordData(View view) {
@@ -192,6 +194,7 @@ public class MyCursorAdapter extends CursorAdapter {
             ibtn_show_text_section=(ImageButton)view.findViewById(R.id.ibtn_show_text_section);
             tv_context = (TextView)view.findViewById(R.id.tv_context);
             lay_context = view.findViewById(R.id.lay_context);
+            ibtn_viewText=(ImageButton)view.findViewById(R.id.ibtn_viewText);
             ibtn_show_text_section.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -199,6 +202,17 @@ public class MyCursorAdapter extends CursorAdapter {
                     str_context = SQLfunctions.getWordPhraseContext(lineStart, textId);
                     tv_context.setText(str_context);
                     lay_context.setVisibility(View.VISIBLE);
+                }
+            });
+
+            ibtn_viewText.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Intent intent = new Intent(_context, ViewTextActivity.class);
+                    intent.putExtra("text_id", textId);
+                    intent.putExtra("text_name", tv_in_text_name.getText().toString());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    _context.startActivity(intent);
+                    // Toast.makeText(_context,"text_id="+ _id, Toast.LENGTH_SHORT).show();
                 }
             });
         }
