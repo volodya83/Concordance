@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    //TODO  show text
+    //TODO decries line under word info
     //TODO add group and relations
     private static final String TAG = "MainActivity";
     private EditText et_texts_name;

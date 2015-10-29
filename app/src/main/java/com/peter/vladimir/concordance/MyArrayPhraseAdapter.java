@@ -1,6 +1,7 @@
 package com.peter.vladimir.concordance;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,7 @@ public class MyArrayPhraseAdapter extends ArrayAdapter<PhraseData> {
         public int position;
         public int textId;
         public int lineStart;
+        public ImageButton ibtn_viewText;
 
         public ViewHolderWordData(View view) {
 
@@ -73,6 +75,7 @@ public class MyArrayPhraseAdapter extends ArrayAdapter<PhraseData> {
             tv_context = (TextView) view.findViewById(R.id.tv_context);
             lay_context = (View) view.findViewById(R.id.lay_context);
             ibtn_show_text_section = (ImageButton) view.findViewById(R.id.ibtn_show_text_section);
+            ibtn_viewText = (ImageButton)view.findViewById(R.id.ibtn_viewText);
             ibtn_show_text_section.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -80,6 +83,17 @@ public class MyArrayPhraseAdapter extends ArrayAdapter<PhraseData> {
                     str_context = SQLfunctions.getWordPhraseContext(lineStart, textId);
                     tv_context.setText(str_context);
                     lay_context.setVisibility(View.VISIBLE);
+                }
+            });
+            ibtn_viewText.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Intent intent = new Intent(_context, ViewTextActivity.class);
+                    intent.putExtra("text_id", textId);
+                    intent.putExtra("text_name", tv_in_text_name.getText().toString());
+                    intent.putExtra("position", lineStart);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    _context.startActivity(intent);
+                    // Toast.makeText(_context,"text_id="+ _id, Toast.LENGTH_SHORT).show();
                 }
             });
         }

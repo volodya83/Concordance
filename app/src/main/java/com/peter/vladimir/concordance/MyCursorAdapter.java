@@ -127,6 +127,7 @@ public class MyCursorAdapter extends CursorAdapter {
                     Intent intent = new Intent(_context, ViewTextActivity.class);
                     intent.putExtra("text_id", _id);
                     intent.putExtra("text_name", tv_text_name.getText().toString());
+                    intent.putExtra("position", 0);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     _context.startActivity(intent);
                     // Toast.makeText(_context,"text_id="+ _id, Toast.LENGTH_SHORT).show();
@@ -210,6 +211,7 @@ public class MyCursorAdapter extends CursorAdapter {
                     Intent intent = new Intent(_context, ViewTextActivity.class);
                     intent.putExtra("text_id", textId);
                     intent.putExtra("text_name", tv_in_text_name.getText().toString());
+                    intent.putExtra("position", lineStart);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     _context.startActivity(intent);
                     // Toast.makeText(_context,"text_id="+ _id, Toast.LENGTH_SHORT).show();

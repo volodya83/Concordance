@@ -24,6 +24,7 @@ public class ViewTextActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_text);
         setTitle(getIntent().getExtras().getString("text_name"));
         int id = getIntent().getExtras().getInt("text_id");
+        int position = getIntent().getExtras().getInt("position");
         tv_text = (TextView) findViewById(R.id.tv_text);
         Cursor cursor = SQLfunctions.viewText(id);
         String text = "", word = "";
@@ -31,6 +32,7 @@ public class ViewTextActivity extends AppCompatActivity {
         Toast.makeText(this, "SQL Query complete", Toast.LENGTH_SHORT).show();
         int cur_line = 1, line;
         int cursor_size=cursor.getCount();
+        int emptyLines=0;
         for (int i = 0; i < cursor_size ; i++) {
             word = cursor.getString(0);
 
@@ -48,7 +50,11 @@ public class ViewTextActivity extends AppCompatActivity {
             }
             if ((line = cursor.getInt(2)) != cur_line || cursor.isLast()) {
                 lines_arr.add(text);
+                emptyLines=line-cur_line;
                 text = "";
+                for (int j=1; j<emptyLines; j++){
+                    lines_arr.add(text);
+                }
                 cur_line=line;
             }
             cursor.moveToNext();
@@ -63,6 +69,10 @@ public class ViewTextActivity extends AppCompatActivity {
         lines_arr.set(lines_arr.size() - 1, lines_arr.get(lines_arr.size() - 1) + word);
         lv_text = (ListView) findViewById(R.id.lv_text);
         lv_text.setAdapter(new MyArrayAdapter(this, R.layout.list_item_text_view, lines_arr));
+        if (position!=0) {
+            lv_text.setSelection(position - 1);
+        }
+
     }
 
     @Override
