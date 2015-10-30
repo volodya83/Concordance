@@ -31,6 +31,8 @@ import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //TODO decries line under word info
+    //TODO save phrases
+    //TODO ibtn search fix
     //TODO add group and relations
     private static final String TAG = "MainActivity";
     private EditText et_texts_name;

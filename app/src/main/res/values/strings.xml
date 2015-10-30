@@ -12,4 +12,5 @@
     <string name="words_title">Words:</string>
     <string name="texts_title">Texts:</string>
     <string name="select_text">Select \n Text:</string>
+    <string name="select_source">Select source</string>
 </resources>

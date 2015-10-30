@@ -34,6 +34,8 @@ public class WordActivity extends AppCompatActivity implements View.OnClickListe
     private MyCursorAdapter wordListAdapter;
     private MyCursorAdapter wordDataAdapter;
     private MyArrayPhraseAdapter phraseAdapter;
+    private EditText et_line_in_source;
+    private EditText et_word_in_source;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,8 @@ public class WordActivity extends AppCompatActivity implements View.OnClickListe
 
         et_search_word = (EditText) findViewById(R.id.et_search_word);
         tv_word_data_info = (TextView) findViewById(R.id.tv_word_data_info);
+        et_line_in_source = (EditText)findViewById(R.id.et_line_in_source);
+        et_word_in_source = (EditText)findViewById(R.id.et_word_in_sorce);
         ibtn_search_word = (ImageButton) findViewById(R.id.ibtn_search_word);
         ibtn_search_word.setOnClickListener(this);
         lv_texts = (ListView) findViewById(R.id.lv_texts_in_words);
@@ -96,11 +100,24 @@ public class WordActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         String[] search_str = new String[1];
+        String line_source, word_source;
         search_str = getArrPhrase(et_search_word.getText().toString());
+        line_source = et_line_in_source.getText().toString();
+        word_source = et_word_in_source.getText().toString();
 
         int[] text_id_arr = listAdapter.get_text_id_arr();
         Integer text_size = text_id_arr[text_id_arr.length - 1];
-        if (search_str.length == 0) {
+        if (line_source.length()>0 && word_source.length()>0){
+            if (text_size!=1){
+                Toast.makeText(this,"To search word by source data you need select only one text", Toast.LENGTH_SHORT).show();
+            }else{
+                tv_word_data_info.setText("Word by source");
+                    cursor_words = SQLfunctions.findWordBySource(text_id_arr[0], line_source, word_source);
+                    wordListAdapter = new MyCursorAdapter(getApplicationContext(), cursor_words, MyCursorAdapter.ID_LIST_FOUND_WORD_ITEM);
+                    lv_found_words.setAdapter(wordListAdapter);
+            }
+        }
+        else if (search_str.length == 0) {
             tv_word_data_info.setText("Words list");
             if (text_size != 0) {
                 String arg = SQLfunctions.listOfTexts(text_id_arr);

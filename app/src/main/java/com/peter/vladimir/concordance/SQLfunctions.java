@@ -411,6 +411,17 @@ public abstract class SQLfunctions {
     }
 
 
+    public static Cursor findWordBySource(int text_id, String line_source, String word_source) {
+        Cursor cursor = _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, word " +
+                                                    "FROM Words JOIN (SELECT DISTINCT word_id " +
+                                                                    "FROM Word_Text_Rel " +
+                                                                    "WHERE text_id="+text_id+" AND " +
+                                                                            "word_text_line="+line_source+" AND " +
+                                                                            "word_position="+word_source+")ON Words._id=word_id ", null);
+
+        return cursor;
+
+    }
 }
 
 
