@@ -445,12 +445,12 @@ public abstract class SQLfunctions {
     }
 
     public static Cursor getGroups(){
-        return _sqLiteDatabase.rawQuery("SELECT _id, DISTINCT(group_name) " +
-                                        "FROM Group ", null);
+        return _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, group_name " +
+                                        "FROM Groups ", null);
     }
 
     public static Cursor getReletions(){
-        return _sqLiteDatabase.rawQuery("SELECT _id, DISTINCT(relation_name) " +
+        return _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, relation_name " +
                                         "FROM Relations ", null);
     }
 
