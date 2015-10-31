@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             }
             case R.id.mbtn_groups:{
-               // this.startActivity(new Intent(this, MainActivity.class));
+                this.startActivity(new Intent(this, GroupsActivity.class));
                 break;
             }
         }

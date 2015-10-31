@@ -27,6 +27,10 @@
             android:name=".WordActivity"
             android:label="@string/title_activity_word" >
         </activity>
+        <activity
+            android:name=".GroupsActivity"
+            android:label="@string/title_activity_groups" >
+        </activity>
     </application>
 
 </manifest>

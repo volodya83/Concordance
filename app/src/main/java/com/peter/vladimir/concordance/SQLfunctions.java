@@ -20,7 +20,7 @@ public abstract class SQLfunctions {
     private static final String TAG = "SQLfunctions";
     private static final int COL_TEXT_NAME = 1;
     final static String TABLE_WORD_TEXT_REL = "Word_Text_Rel", TABLE_TEXTS = "Texts", TABLE_WORDS = "Words",
-            TABLE_AUTHORS = "Authors", TABLE_GROUPS = "Groups", TABLE_RELATIONS = "Relations";
+            TABLE_AUTHORS = "Authors", TABLE_GROUPS = "Groups", TABLE_RELATIONS = "Relations", TABLE_PHRASES="Phrases";
     final static int ALL_CAPITAL = 1, ONE_CAPITAL = 2, ALL_SMALL = 3, SYMBOL = 4, NUMBER = 5;
     private static final int NO_ID = 0;
     private static DBHelper dbHelper;
@@ -421,6 +421,42 @@ public abstract class SQLfunctions {
 
         return cursor;
 
+    }
+
+    public static void insertWordToGroup(String grpName, String grpStr) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("group_name", grpName);
+        contentValues.put("word_str", grpStr);
+        _sqLiteDatabase.insert(TABLE_GROUPS, null, contentValues);
+    }
+
+    public static void insertWordsToReletions(String relName, String relWord1, String relWord2) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("relation_name", relName);
+        contentValues.put("relation_word1", relWord1);
+        contentValues.put("relation_word2", relWord2);
+        _sqLiteDatabase.insert(TABLE_RELATIONS, null, contentValues);
+    }
+
+    public static void insertPhrase(String phrase) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("phrase_str", phrase);
+        _sqLiteDatabase.insert(TABLE_PHRASES, null, contentValues);
+    }
+
+    public static Cursor getGroups(){
+        return _sqLiteDatabase.rawQuery("SELECT _id, DISTINCT(group_name) " +
+                                        "FROM Group ", null);
+    }
+
+    public static Cursor getReletions(){
+        return _sqLiteDatabase.rawQuery("SELECT _id, DISTINCT(relation_name) " +
+                                        "FROM Relations ", null);
+    }
+
+    public static Cursor getPhrases(){
+        return _sqLiteDatabase.rawQuery("SELECT * " +
+                                        "FROM Phrases ", null);
     }
 }
 

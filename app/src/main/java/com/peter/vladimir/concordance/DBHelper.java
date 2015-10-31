@@ -44,10 +44,14 @@ private Context _context;
                 "relation_id integer NOT NULL," +
                 "relation_name text" +
                 ");";
-        final String CREATE_TABLE_GROUPS = "CREATE TABLE Groups (" +
-                "_id integer NOT NULL PRIMARY KEY AUTOINCREMENT," +
-                "group_name text NOT NULL," +
+        final String CREATE_TABLE_GROUPS = "CREATE TABLE Groups ( " +
+                "_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                "group_name text NOT NULL, " +
                 "word_str text NOT NULL " +
+                ");";
+        final String CREATE_TABLE_PHRASES = "CREATE TABLE Phrases ( " +
+                "_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                "phrase_str text NOT NULL " +
                 ");";
         final String CREATE_TABLE_AUTHORS = "CREATE TABLE Authors (" +
                 "_id integer NOT NULL PRIMARY KEY AUTOINCREMENT," +
@@ -85,6 +89,7 @@ private Context _context;
         sqLiteDatabase.execSQL(CREATE_TABLE_AUTHORS);
         sqLiteDatabase.execSQL(CREATE_TABLE_RELATIONS);
         sqLiteDatabase.execSQL(CREATE_TABLE_GROUPS);
+        sqLiteDatabase.execSQL(CREATE_TABLE_PHRASES);
         sqLiteDatabase.execSQL(CREATE_TABLE_WORD_TEXT_REL);
         sqLiteDatabase.execSQL(CREATE_TRIGGER_WORD_TEXT_REL);
         sqLiteDatabase.execSQL(CREATE_TRIGGER_TEXTS);

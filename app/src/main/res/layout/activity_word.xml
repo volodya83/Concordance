@@ -6,8 +6,7 @@
     tools:context="com.peter.vladimir.concordance.WordActivity"
     android:background="#68b8ff"
     android:padding="5dp"
-    android:gravity="center_horizontal"
-    android:id="@+id/">
+    android:gravity="center_horizontal">
 
 
     <LinearLayout
