@@ -20,11 +20,13 @@ public class MyGroupCursorAdapter extends CursorAdapter {
     private static final int COL_ID = 0;
     private int _resource;
     public Context _context;
+    public String _group_name;
 
-    public MyGroupCursorAdapter(Context context, Cursor c, int resource) {
+    public MyGroupCursorAdapter(Context context, Cursor c, int resource, String group_name) {
         super(context, c);
         _resource = resource;
         _context = context;
+        _group_name=group_name;
 
     }
 
@@ -47,14 +49,15 @@ public class MyGroupCursorAdapter extends CursorAdapter {
                 ViewHolderList1 viewHolder1 = (ViewHolderList1)view.getTag();
                 String group_name = cursor.getString(COL_GROUP_NAME);
                 viewHolder1.tv_grp_item_name.setText(group_name);
-                viewHolder1.tv_grp_item_name.setOnClickListener(new GroupsActivity.MyClickListener(view, group_name, _context));
+                viewHolder1.tv_grp_item_name.setOnClickListener(new GroupsActivity.MyClickListener(view, group_name, _context, 0));
             }else if (_resource == LIST_ITEM_GROUP_CONTENT){
                 ViewHolderList2 viewHolder2 = (ViewHolderList2)view.getTag();
                 String group_content = cursor.getString(COL_GROUP_CONTENT);
+                String group_name = cursor.getString(COL_GROUP_NAME);
                 viewHolder2.tv_grp_item_content.setText(group_content);
-                String idContent=String.valueOf(cursor.getInt(COL_ID));
+                int idContent=cursor.getInt(COL_ID);
 
-                viewHolder2.ibtn_grp_content_item_delete.setOnClickListener(new GroupsActivity.MyClickListener(view, idContent, _context ));
+                viewHolder2.ibtn_grp_content_item_delete.setOnClickListener(new GroupsActivity.MyClickListener(view, _group_name, _context, idContent));
             }
         }
 

@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    //TODO move delete button to end of line
+    //TODO refresh list on + word to group
     //TODO decries line under word info
     //TODO save phrases
     //TODO ibtn search fix

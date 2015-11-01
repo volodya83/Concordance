@@ -19,13 +19,14 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
     public static TextView tv_grp_name_title;
     public static TextView tv_grp_1lst_title;
     public static TextView tv_grp_2lst_title;
-    private RadioButton rbtn_grp_group;
+    private static RadioButton rbtn_grp_group;
     private RadioButton rbtn_grp_relation;
     private RadioButton rbtn_grp_phrase;
     private ImageButton ibtn_grp_plus;
-    private ListView lv_grp_1lst;
+    private static ListView lv_grp_1lst;
     private static ListView lv_grp_2lst;
-    private View selectedRbtn;
+    private static View selectedRbtn;
+    private static Context _context;
 
 
     @Override
@@ -33,6 +34,7 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
 
+        _context=this;
         et_grp_str = (EditText) findViewById(R.id.et_grp_str);
         et_grp_name = (EditText) findViewById(R.id.et_grp_name);
         tv_grp_name_title = (TextView) findViewById(R.id.tv_grp_name_title);
@@ -73,12 +75,13 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
 
     public static class MyClickListener implements View.OnClickListener {
         private String _group_name;
-        private Context _context;
+        public Context _context;
         private int _idContent;
 
-        public MyClickListener(View view, String group_name, Context context ) {
+        public MyClickListener(View view, String group_name, Context context, int idContent) {
             _group_name = group_name;
             _context = context;
+            _idContent = idContent;
         }
 
         @Override
@@ -87,26 +90,27 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
                 et_grp_name.setText(_group_name);
                 tv_grp_2lst_title.setText("Words in group: " + _group_name);
                 Cursor cursor = SQLfunctions.getGroupContent(_group_name);
-                lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content));
+                lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content, _group_name));
             } else if (v.getId() == R.id.ibtn_grp_content_item_delete) {
-                SQLfunctions.deleteContentInGroup(_group_name);// RowId
+                SQLfunctions.deleteContentInGroup(_idContent);// RowId
+                refreshFirstList();
                 tv_grp_2lst_title.setText("Words in group: " + _group_name);
                 Cursor cursor = SQLfunctions.getGroupContent(_group_name);
                 if (cursor.getCount() == 0) {
                     et_grp_name.setText("");
                 }
-                    lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content));
+                    lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content, _group_name));
 
                 }
             }
         }
 
-        private void refreshFirstList() {
+        public static void refreshFirstList() {
             if (selectedRbtn == rbtn_grp_group) {
                 Cursor cursor = SQLfunctions.getGroups();
                 tv_grp_1lst_title.setText("Groups");
                 tv_grp_2lst_title.setText("Words in group: ");
-                lv_grp_1lst.setAdapter(new MyGroupCursorAdapter(this, cursor, R.layout.list_item_group_name));
+                lv_grp_1lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_name, ""));
             }
         }
 

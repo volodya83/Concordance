@@ -466,7 +466,7 @@ public abstract class SQLfunctions {
                                         "WHERE group_name='"+group_name+"'", null);
     }
 
-    public static void deleteContentInGroup(String id) {
+    public static void deleteContentInGroup(int id) {
         _sqLiteDatabase.delete(TABLE_GROUPS, "_id="+id,null );
     }
 }
