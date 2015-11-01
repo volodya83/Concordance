@@ -17,6 +17,7 @@ public class MyGroupCursorAdapter extends CursorAdapter {
     private static final int LIST_ITEM_GROUP_CONTENT = R.layout.list_item_group_content;
     private static final int COL_GROUP_NAME = 1;
     private static final int COL_GROUP_CONTENT = 1;
+    private static final int COL_ID = 0;
     private int _resource;
     public Context _context;
 
@@ -51,6 +52,9 @@ public class MyGroupCursorAdapter extends CursorAdapter {
                 ViewHolderList2 viewHolder2 = (ViewHolderList2)view.getTag();
                 String group_content = cursor.getString(COL_GROUP_CONTENT);
                 viewHolder2.tv_grp_item_content.setText(group_content);
+                String idContent=String.valueOf(cursor.getInt(COL_ID));
+
+                viewHolder2.ibtn_grp_content_item_delete.setOnClickListener(new GroupsActivity.MyClickListener(view, idContent, _context ));
             }
         }
 

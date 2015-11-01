@@ -27,6 +27,7 @@ public class MyArrayAdapter extends ArrayAdapter<String> {
         _objects = (ArrayList<String>) objects;
         _context = context;
         _resource = resource;
+
     }
 
     @Override

@@ -33,34 +33,35 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
 
-        et_grp_str = (EditText)findViewById(R.id.et_grp_str);
-        et_grp_name = (EditText)findViewById(R.id.et_grp_name);
-        tv_grp_name_title = (TextView)findViewById(R.id.tv_grp_name_title);
-        tv_grp_1lst_title = (TextView)findViewById(R.id.tv_grp_1lst_title);
-        tv_grp_2lst_title = (TextView)findViewById(R.id.tv_grp_2lst_title);
-        rbtn_grp_group = (RadioButton)findViewById(R.id.rbtn_grp_group);
+        et_grp_str = (EditText) findViewById(R.id.et_grp_str);
+        et_grp_name = (EditText) findViewById(R.id.et_grp_name);
+        tv_grp_name_title = (TextView) findViewById(R.id.tv_grp_name_title);
+        tv_grp_1lst_title = (TextView) findViewById(R.id.tv_grp_1lst_title);
+        tv_grp_2lst_title = (TextView) findViewById(R.id.tv_grp_2lst_title);
+        rbtn_grp_group = (RadioButton) findViewById(R.id.rbtn_grp_group);
         rbtn_grp_group.setOnClickListener(this);
         rbtn_grp_group.setChecked(true);
-        selectedRbtn=rbtn_grp_group;
-        rbtn_grp_relation = (RadioButton)findViewById(R.id.rbtn_grp_relation);
+        selectedRbtn = rbtn_grp_group;
+        rbtn_grp_relation = (RadioButton) findViewById(R.id.rbtn_grp_relation);
         rbtn_grp_relation.setOnClickListener(this);
-        rbtn_grp_phrase = (RadioButton)findViewById(R.id.rbtn_grp_phrase);
+        rbtn_grp_phrase = (RadioButton) findViewById(R.id.rbtn_grp_phrase);
         rbtn_grp_phrase.setOnClickListener(this);
-        ibtn_grp_plus = (ImageButton)findViewById(R.id.ibtn_grp_plus);
+        ibtn_grp_plus = (ImageButton) findViewById(R.id.ibtn_grp_plus);
         ibtn_grp_plus.setOnClickListener(this);
-        lv_grp_1lst = (ListView)findViewById(R.id.lv_grp_1lst);
+        lv_grp_1lst = (ListView) findViewById(R.id.lv_grp_1lst);
         refreshFirstList();
-        lv_grp_2lst = (ListView)findViewById(R.id.lv_grp_2lst);
+        lv_grp_2lst = (ListView) findViewById(R.id.lv_grp_2lst);
     }
+
     @Override
     public void onClick(View v) {
         String grpStr = et_grp_str.getText().toString();
         String grpName = et_grp_name.getText().toString();
-        if(v!=ibtn_grp_plus){
-            selectedRbtn=v;
+        if (v != ibtn_grp_plus) {
+            selectedRbtn = v;
         }
 
-        if (v==ibtn_grp_plus) {
+        if (v == ibtn_grp_plus) {
             if (grpStr.length() > 0 && grpName.length() > 0) {
                 if (selectedRbtn == rbtn_grp_group) {
                     SQLfunctions.insertWordToGroup(grpName, grpStr);
@@ -73,8 +74,9 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
     public static class MyClickListener implements View.OnClickListener {
         private String _group_name;
         private Context _context;
+        private int _idContent;
 
-        public MyClickListener(View view, String group_name, Context context) {
+        public MyClickListener(View view, String group_name, Context context ) {
             _group_name = group_name;
             _context = context;
         }
@@ -86,42 +88,49 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
                 tv_grp_2lst_title.setText("Words in group: " + _group_name);
                 Cursor cursor = SQLfunctions.getGroupContent(_group_name);
                 lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content));
-            }else if (v.getId()==R.id.ibtn_grp_content_item_delete){
+            } else if (v.getId() == R.id.ibtn_grp_content_item_delete) {
+                SQLfunctions.deleteContentInGroup(_group_name);// RowId
+                tv_grp_2lst_title.setText("Words in group: " + _group_name);
+                Cursor cursor = SQLfunctions.getGroupContent(_group_name);
+                if (cursor.getCount() == 0) {
+                    et_grp_name.setText("");
+                }
+                    lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content));
 
+                }
             }
         }
-    }
 
-    private void refreshFirstList() {
-        if (selectedRbtn==rbtn_grp_group){
-            Cursor cursor = SQLfunctions.getGroups();
-            tv_grp_1lst_title.setText("Groups");
-            tv_grp_2lst_title.setText("Words in group: ");
-            lv_grp_1lst.setAdapter(new MyGroupCursorAdapter(this, cursor, R.layout.list_item_group_name));
+        private void refreshFirstList() {
+            if (selectedRbtn == rbtn_grp_group) {
+                Cursor cursor = SQLfunctions.getGroups();
+                tv_grp_1lst_title.setText("Groups");
+                tv_grp_2lst_title.setText("Words in group: ");
+                lv_grp_1lst.setAdapter(new MyGroupCursorAdapter(this, cursor, R.layout.list_item_group_name));
+            }
         }
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_groups, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.menu_word, menu);
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            // Handle action bar item clicks here. The action bar will
+            // automatically handle clicks on the Home/Up button, so long
+            // as you specify a parent activity in AndroidManifest.xml.
+            int id = item.getItemId();
+
+            //noinspection SimplifiableIfStatement
+            if (id == R.id.action_settings) {
+                return true;
+            }
+
+            return super.onOptionsItemSelected(item);
+        }
+
+
     }
-
-
-}
