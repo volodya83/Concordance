@@ -445,8 +445,9 @@ public abstract class SQLfunctions {
     }
 
     public static Cursor getGroups(){
-        return _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, group_name " +
-                                        "FROM Groups ", null);
+        return _sqLiteDatabase.rawQuery("SELECT * " +
+                                        "FROM Groups " +
+                                        "GROUP BY group_name ", null);
     }
 
     public static Cursor getReletions(){
@@ -457,6 +458,12 @@ public abstract class SQLfunctions {
     public static Cursor getPhrases(){
         return _sqLiteDatabase.rawQuery("SELECT * " +
                                         "FROM Phrases ", null);
+    }
+
+    public static Cursor getGroupContent(String group_name) {
+        return _sqLiteDatabase.rawQuery("SELECT _id, word_str " +
+                                        "FROM Groups " +
+                                        "WHERE group_name='"+group_name+"'", null);
     }
 }
 

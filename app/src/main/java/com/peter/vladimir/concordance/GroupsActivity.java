@@ -1,5 +1,6 @@
 package com.peter.vladimir.concordance;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,16 +15,16 @@ import android.widget.TextView;
 
 public class GroupsActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText et_grp_str;
-    private EditText et_grp_name;
-    private TextView tv_grp_name_title;
-    private TextView tv_grp_1lst_title;
-    private TextView tv_grp_2lst_title;
+    public static EditText et_grp_name;
+    public static TextView tv_grp_name_title;
+    public static TextView tv_grp_1lst_title;
+    public static TextView tv_grp_2lst_title;
     private RadioButton rbtn_grp_group;
     private RadioButton rbtn_grp_relation;
     private RadioButton rbtn_grp_phrase;
     private ImageButton ibtn_grp_plus;
     private ListView lv_grp_1lst;
-    private ListView lv_grp_2lst;
+    private static ListView lv_grp_2lst;
     private View selectedRbtn;
 
 
@@ -69,9 +70,33 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    public static class MyClickListener implements View.OnClickListener {
+        private String _group_name;
+        private Context _context;
+
+        public MyClickListener(View view, String group_name, Context context) {
+            _group_name = group_name;
+            _context = context;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.tv_grp_item_name) {
+                et_grp_name.setText(_group_name);
+                tv_grp_2lst_title.setText("Words in group: " + _group_name);
+                Cursor cursor = SQLfunctions.getGroupContent(_group_name);
+                lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content));
+            }else if (v.getId()==R.id.ibtn_grp_content_item_delete){
+
+            }
+        }
+    }
+
     private void refreshFirstList() {
         if (selectedRbtn==rbtn_grp_group){
             Cursor cursor = SQLfunctions.getGroups();
+            tv_grp_1lst_title.setText("Groups");
+            tv_grp_2lst_title.setText("Words in group: ");
             lv_grp_1lst.setAdapter(new MyGroupCursorAdapter(this, cursor, R.layout.list_item_group_name));
         }
     }

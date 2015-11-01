@@ -5,17 +5,22 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/tv_grp_item_name"
+        android:id="@+id/tv_grp_item_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="8"
+        android:layout_weight="7"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ImageButton
-        android:id="@+id/ibtn_grp_item_delete"
+        android:id="@+id/ibtn_grp_content_item_search"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/ic_menu_search"
+        android:layout_weight="1" />
+    <ImageButton
+        android:id="@+id/ibtn_grp_content_item_delete"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@android:drawable/ic_menu_delete"
-        android:gravity="right" />
+        android:background="@android:drawable/ic_menu_delete" />
 </LinearLayout>

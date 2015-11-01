@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:background="#ffffff"
+        android:background="#c8fffe"
         android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -35,8 +35,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:background="#ffffff"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="#bdfffe">
 
         <RadioButton
             android:id="@+id/rbtn_grp_group"
@@ -44,6 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:checked="false"
+            android:background="#ffffff"
             android:text="Groups" />
 
         <RadioButton
@@ -52,7 +53,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:checked="false"
-            android:text="Relations" />
+            android:text="Relations"
+            android:background="#ffffff"
+            android:layout_marginLeft="3dp" />
 
         <RadioButton
             android:id="@+id/rbtn_grp_phrase"
@@ -60,14 +63,17 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:checked="false"
-            android:text="Phrases" />
+            android:text="Phrases"
+            android:background="#ffffff"
+            android:layout_marginLeft="3dp" />
 
         <ImageButton
             android:id="@+id/ibtn_grp_plus"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@android:drawable/ic_input_add" />
+            android:background="@android:drawable/ic_input_add"
+            android:layout_marginLeft="3dp" />
     </RadioGroup>
 
     <TextView
@@ -76,13 +82,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
-        android:background="#ffffff"
+        android:background="#c8fffe"
         android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <ListView
         android:id="@+id/lv_grp_1lst"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
@@ -94,8 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
-        android:background="#ffffff"
-        android:text="Small Text"
+        android:background="#c8fffe"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <ListView
