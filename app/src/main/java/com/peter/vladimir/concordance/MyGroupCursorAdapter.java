@@ -18,6 +18,7 @@ public class MyGroupCursorAdapter extends CursorAdapter {
     private static final int COL_GROUP_NAME = 1;
     private static final int COL_GROUP_CONTENT = 1;
     private static final int COL_ID = 0;
+    private static final int DELETE = 1;
     private int _resource;
     public Context _context;
     public String _group_name;
@@ -48,22 +49,27 @@ public class MyGroupCursorAdapter extends CursorAdapter {
             if (_resource == LIST_ITEM_GROUP_NAME) {
                 ViewHolderList1 viewHolder1 = (ViewHolderList1)view.getTag();
                 String group_name = cursor.getString(COL_GROUP_NAME);
+                viewHolder1.group_name = group_name;
                 viewHolder1.tv_grp_item_name.setText(group_name);
                 viewHolder1.tv_grp_item_name.setOnClickListener(new GroupsActivity.MyClickListener(view, group_name, _context, 0));
             }else if (_resource == LIST_ITEM_GROUP_CONTENT){
                 ViewHolderList2 viewHolder2 = (ViewHolderList2)view.getTag();
                 String group_content = cursor.getString(COL_GROUP_CONTENT);
                 String group_name = cursor.getString(COL_GROUP_NAME);
+                //viewHolder2.group_name = group_name;
                 viewHolder2.tv_grp_item_content.setText(group_content);
                 int idContent=cursor.getInt(COL_ID);
-
+                String strContent = cursor.getString(COL_GROUP_CONTENT);
+                viewHolder2.ibtn_grp_content_item_search.setOnClickListener(new GroupsActivity.MyClickListener(view, _group_name, _context, idContent, strContent));
                 viewHolder2.ibtn_grp_content_item_delete.setOnClickListener(new GroupsActivity.MyClickListener(view, _group_name, _context, idContent));
+
             }
         }
 
     private class ViewHolderList1 {
         public TextView tv_grp_item_name;
         public ImageButton ibtn_grp_item_delete;
+        public String group_name;
 
         public ViewHolderList1(View view) {
             tv_grp_item_name = (TextView)view.findViewById(R.id.tv_grp_item_name);
@@ -71,7 +77,9 @@ public class MyGroupCursorAdapter extends CursorAdapter {
             ibtn_grp_item_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    SQLfunctions.deleteGroup(group_name);
+                    GroupsActivity.refreshFirstList();
+                    GroupsActivity.refreshSecondList(group_name, DELETE);
                 }
             });
         }

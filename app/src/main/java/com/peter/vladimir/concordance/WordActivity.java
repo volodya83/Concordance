@@ -44,6 +44,10 @@ public class WordActivity extends AppCompatActivity implements View.OnClickListe
         setTitle(R.string.words_title);
 
         et_search_word = (EditText) findViewById(R.id.et_search_word);
+        if (getIntent().hasExtra("strContent")){
+            String strContent = getIntent().getExtras().getString("strContent");
+            et_search_word.setText(strContent);
+        }
         tv_word_data_info = (TextView) findViewById(R.id.tv_word_data_info);
         et_line_in_source = (EditText)findViewById(R.id.et_line_in_source);
         et_word_in_source = (EditText)findViewById(R.id.et_word_in_sorce);

@@ -8,18 +8,10 @@
     tools:context="com.peter.vladimir.concordance.GroupsActivity">
 
 
-    <EditText
-        android:id="@+id/et_grp_str"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffffff"
-        android:textSize="12pt" />
-
     <TextView
         android:id="@+id/tv_grp_name_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:background="#c8fffe"
         android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -29,51 +21,60 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#ffffff"
-        android:textSize="12pt" />
+        android:textSize="10pt" />
+
+    <EditText
+        android:id="@+id/et_grp_str"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="#ffffff"
+        android:hint="Enter word or phrase"
+        android:textSize="10pt" />
 
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:orientation="horizontal"
-        android:background="#bdfffe">
+        android:background="#bdfffe"
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/rbtn_grp_group"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:checked="false"
             android:background="#ffffff"
+            android:checked="false"
             android:text="Groups" />
 
         <RadioButton
             android:id="@+id/rbtn_grp_relation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
             android:layout_weight="2"
-            android:checked="false"
-            android:text="Relations"
             android:background="#ffffff"
-            android:layout_marginLeft="3dp" />
+            android:checked="false"
+            android:text="Relations" />
 
         <RadioButton
             android:id="@+id/rbtn_grp_phrase"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
             android:layout_weight="2"
-            android:checked="false"
-            android:text="Phrases"
             android:background="#ffffff"
-            android:layout_marginLeft="3dp" />
+            android:checked="false"
+            android:text="Phrases" />
 
         <ImageButton
             android:id="@+id/ibtn_grp_plus"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginLeft="3dp"
             android:layout_weight="1"
-            android:background="@android:drawable/ic_input_add"
-            android:layout_marginLeft="3dp" />
+            android:background="@android:drawable/ic_input_add" />
     </RadioGroup>
 
     <TextView
