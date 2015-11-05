@@ -79,6 +79,13 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
             changeLayout(PHRASE);
         }else if (v==rbtn_grp_group){
             changeLayout(GROUP);
+            ViewGroup viewGroup=(ViewGroup) findViewById(R.id.layout_activity_group);
+            viewGroup.invalidate();
+            //setContentView(R.layout.activity_groups);
+            //onCreate(new Bundle());
+
+            refreshFirstList();
+
         }
 
         if (v == ibtn_grp_plus) {
