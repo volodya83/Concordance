@@ -79,12 +79,12 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
             changeLayout(PHRASE);
         }else if (v==rbtn_grp_group){
             changeLayout(GROUP);
-            ViewGroup viewGroup=(ViewGroup) findViewById(R.id.layout_activity_group);
-            viewGroup.invalidate();
+            //ViewGroup viewGroup=(ViewGroup) findViewById(R.id.layout_activity_group);
+            //viewGroup.invalidate();
             //setContentView(R.layout.activity_groups);
             //onCreate(new Bundle());
 
-            refreshFirstList();
+            //refreshFirstList();
 
         }
 
@@ -104,24 +104,41 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
 
     private void changeLayout(int status){
         if (status==GROUP){
-            tv_grp_name_title.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-
-            tv_grp_1lst_title.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+            ViewGroup.LayoutParams params = tv_grp_1lst_title.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            tv_grp_1lst_title.setLayoutParams(params);
             tv_grp_1lst_title.setText("Groups");
-            et_grp_name.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            params = tv_grp_name_title.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            tv_grp_name_title.setLayoutParams(params);
+
+            params = et_grp_name.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            et_grp_name.setLayoutParams(params);
+
             tv_grp_2lst_title.setText("Words in group:");
 
-            ViewGroup.LayoutParams lp = lv_grp_2lst.getLayoutParams();
-            lp.height = 0;
-            lv_grp_2lst.setLayoutParams(lp);
+            params = lv_grp_2lst.getLayoutParams();
+            params.height = 0;
+            lv_grp_2lst.setLayoutParams(params);
         }else if (status==PHRASE){
-            tv_grp_name_title.setHeight(0);
-            tv_grp_1lst_title.setHeight(0);
-            et_grp_name.setHeight(0);
+            ViewGroup.LayoutParams params = tv_grp_1lst_title.getLayoutParams();
+            params.height = 0;
+            tv_grp_1lst_title.setLayoutParams(params);
+
+            params = tv_grp_name_title.getLayoutParams();
+            params.height = 0;
+            tv_grp_name_title.setLayoutParams(params);
+
+            params = et_grp_name.getLayoutParams();
+            params.height = 0;
+            et_grp_name.setLayoutParams(params);
             tv_grp_2lst_title.setText("Phrases");
-            ViewGroup.LayoutParams lp = lv_grp_2lst.getLayoutParams();
-            lp.height = lp.MATCH_PARENT;
-            lv_grp_2lst.setLayoutParams(lp);
+
+            params = lv_grp_2lst.getLayoutParams();
+            params.height = params.MATCH_PARENT;
+            lv_grp_2lst.setLayoutParams(params);
         }
     }
 
