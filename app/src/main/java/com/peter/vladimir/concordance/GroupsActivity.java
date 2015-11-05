@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -18,8 +20,10 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class GroupsActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
+public class GroupsActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String LOG_TAG = GroupsActivity.class.toString();
+    private static final int GROUP = 1;
+    private static final int PHRASE = 2;
     private EditText et_grp_str;
     public static EditText et_grp_name;
     public static TextView tv_grp_name_title;
@@ -53,7 +57,7 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
         rbtn_grp_relation = (RadioButton) findViewById(R.id.rbtn_grp_relation);
         rbtn_grp_relation.setOnClickListener(this);
         rbtn_grp_phrase = (RadioButton) findViewById(R.id.rbtn_grp_phrase);
-        rbtn_grp_phrase.setOnTouchListener(this);
+        rbtn_grp_phrase.setOnClickListener(this);
         ibtn_grp_plus = (ImageButton) findViewById(R.id.ibtn_grp_plus);
         ibtn_grp_plus.setOnClickListener(this);
         lv_grp_1lst = (ListView) findViewById(R.id.lv_grp_1lst);
@@ -63,16 +67,18 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
+
         String grpStr = et_grp_str.getText().toString();
         String grpName = et_grp_name.getText().toString();
         if (v != ibtn_grp_plus) {
             selectedRbtn = v;
         }
         if (v==rbtn_grp_phrase){
+            Toast.makeText(this, "onTouch"+v.toString(), Toast.LENGTH_SHORT).show();
             Log.d(LOG_TAG, "rbtn_grp_phrase clicked");
-            et_grp_name.setText("");
-            et_grp_name.setVisibility(View.INVISIBLE);
-            lv_grp_1lst.setVisibility(View.INVISIBLE);
+            changeLayout(PHRASE);
+        }else if (v==rbtn_grp_group){
+            changeLayout(GROUP);
         }
 
         if (v == ibtn_grp_plus) {
@@ -89,13 +95,28 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-//    @Override
-//    public boolean onTouch(View v, MotionEvent event) {
-//        Toast.makeText(this, "onTouch"+v.getTag().toString(), Toast.LENGTH_SHORT).show();
-//        onClick(v);
-//        return true;
-//    }
+    private void changeLayout(int status){
+        if (status==GROUP){
+            tv_grp_name_title.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
 
+            tv_grp_1lst_title.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+            tv_grp_1lst_title.setText("Groups");
+            et_grp_name.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+            tv_grp_2lst_title.setText("Words in group:");
+
+            ViewGroup.LayoutParams lp = lv_grp_2lst.getLayoutParams();
+            lp.height = 0;
+            lv_grp_2lst.setLayoutParams(lp);
+        }else if (status==PHRASE){
+            tv_grp_name_title.setHeight(0);
+            tv_grp_1lst_title.setHeight(0);
+            et_grp_name.setHeight(0);
+            tv_grp_2lst_title.setText("Phrases");
+            ViewGroup.LayoutParams lp = lv_grp_2lst.getLayoutParams();
+            lp.height = lp.MATCH_PARENT;
+            lv_grp_2lst.setLayoutParams(lp);
+        }
+    }
 
     public static class MyClickListener implements View.OnClickListener {
         private String _group_name;
