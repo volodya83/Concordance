@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    //TODO group activity radio button not updated
     //TODO decries line under word info
     //TODO save phrases
     //TODO ibtn search fix
