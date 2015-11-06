@@ -30,12 +30,12 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
     public static TextView tv_grp_1lst_title;
     public static TextView tv_grp_2lst_title;
     private static RadioButton rbtn_grp_group;
-    private RadioButton rbtn_grp_relation;
-    private RadioButton rbtn_grp_phrase;
+    private static RadioButton rbtn_grp_relation;
+    private static RadioButton rbtn_grp_phrase;
     private ImageButton ibtn_grp_plus;
     private static ListView lv_grp_1lst;
     private static ListView lv_grp_2lst;
-    private static View selectedRbtn;
+    protected static View selectedRbtn;
     private static Context _context;
 
 
@@ -73,19 +73,13 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
         if (v != ibtn_grp_plus) {
             selectedRbtn = v;
         }
-        if (v==rbtn_grp_phrase){
-            Toast.makeText(this, "onTouch"+v.toString(), Toast.LENGTH_SHORT).show();
+        if (v == rbtn_grp_phrase) {
             Log.d(LOG_TAG, "rbtn_grp_phrase clicked");
             changeLayout(PHRASE);
-        }else if (v==rbtn_grp_group){
+            refreshSecondList(0,"",0);
+        } else if (v == rbtn_grp_group) {
             changeLayout(GROUP);
-            //ViewGroup viewGroup=(ViewGroup) findViewById(R.id.layout_activity_group);
-            //viewGroup.invalidate();
-            //setContentView(R.layout.activity_groups);
-            //onCreate(new Bundle());
-
-            //refreshFirstList();
-
+            refreshFirstList();
         }
 
         if (v == ibtn_grp_plus) {
@@ -95,19 +89,19 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
                     refreshFirstList();
                     Cursor cursor = SQLfunctions.getGroupContent(grpName);
                     lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(this, cursor, R.layout.list_item_group_content, grpName));
-                }else if (selectedRbtn == rbtn_grp_phrase){
-                    //SQLfunctions.insertPhrase();
+                } else if (selectedRbtn == rbtn_grp_phrase) {
+                    SQLfunctions.insertPhrase(et_grp_str.getText().toString());
                 }
             }
         }
     }
 
-    private void changeLayout(int status){
-        if (status==GROUP){
+    private void changeLayout(int status) {
+        if (status == GROUP) {
             ViewGroup.LayoutParams params = tv_grp_1lst_title.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             tv_grp_1lst_title.setLayoutParams(params);
-            tv_grp_1lst_title.setText("Groups");
+            //tv_grp_1lst_title.setText("Groups");
 
             params = tv_grp_name_title.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -117,12 +111,12 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             et_grp_name.setLayoutParams(params);
 
-            tv_grp_2lst_title.setText("Words in group:");
+           // tv_grp_2lst_title.setText("Words in group:");
 
             params = lv_grp_2lst.getLayoutParams();
             params.height = 0;
             lv_grp_2lst.setLayoutParams(params);
-        }else if (status==PHRASE){
+        } else if (status == PHRASE) {
             ViewGroup.LayoutParams params = tv_grp_1lst_title.getLayoutParams();
             params.height = 0;
             tv_grp_1lst_title.setLayoutParams(params);
@@ -163,24 +157,34 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.tv_grp_item_name) {
-                et_grp_name.setText(_group_name);
-                refreshSecondList(_group_name, 0);
-            } else if (v.getId() == R.id.ibtn_grp_content_item_delete) {
-                SQLfunctions.deleteContentInGroup(_idContent);// RowId
-                refreshFirstList();
-                tv_grp_2lst_title.setText("Words in group: " + _group_name);
-                Cursor cursor = SQLfunctions.getGroupContent(_group_name);
-                if (cursor.getCount() == 0) {
-                    et_grp_name.setText("");
-                }
-                lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content, _group_name));
+            if (selectedRbtn == rbtn_grp_group) {
+                if (v.getId() == R.id.tv_grp_item_name) {
+                    et_grp_name.setText(_group_name);
+                    refreshSecondList(R.id.tv_grp_item_name, _group_name, 0);
+                } else if (v.getId() == R.id.ibtn_grp_content_item_delete) {
+                    SQLfunctions.deleteContentInGroup(_idContent);// RowId
+                    refreshFirstList();
+                    tv_grp_2lst_title.setText("Words in group: " + _group_name);
+                    Cursor cursor = SQLfunctions.getGroupContent(_group_name);
+                    if (cursor.getCount() == 0) {
+                        et_grp_name.setText("");
+                    }
+                    lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content, _group_name));
 
-            }else if (v.getId() == R.id.ibtn_grp_content_item_search){
-                Intent intent = new Intent(_context, WordActivity.class);
-                intent.putExtra("strContent", _strContent);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                _context.startActivity(intent);
+                } else if (v.getId() == R.id.ibtn_grp_content_item_search) {
+                    Intent intent = new Intent(_context, WordActivity.class);
+                    intent.putExtra("strContent", _strContent);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    _context.startActivity(intent);
+                }
+            }
+            if (selectedRbtn==rbtn_grp_phrase)
+            {
+              if(v.getId()==R.id.ibtn_grp_content_item_delete)
+              {
+                  SQLfunctions.deletePhrase(_idContent);// RowId
+                  refreshSecondList(0,"",0);
+              }
             }
         }
     }
@@ -194,14 +198,21 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    public static void refreshSecondList(String group_name, int status) {
-        if (status == 1) {
-            tv_grp_2lst_title.setText("Words in group: ");
-        } else {
-            tv_grp_2lst_title.setText("Words in group: " + group_name);
+    public static void refreshSecondList(int viewId, String group_name, int status) {
+        if (selectedRbtn == rbtn_grp_group) {
+            if (viewId == R.id.tv_grp_item_name) {
+                if (status == 1)
+                    tv_grp_2lst_title.setText("Words in group: ");
+                else {
+                    tv_grp_2lst_title.setText("Words in group: " + group_name);
+                }
+                Cursor cursor = SQLfunctions.getGroupContent(group_name);
+                lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content, group_name));
+            }
+        } else if (selectedRbtn==rbtn_grp_phrase) {
+            Cursor cursor = SQLfunctions.getPhrases();
+            lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content, ""));
         }
-        Cursor cursor = SQLfunctions.getGroupContent(group_name);
-        lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content, group_name));
     }
 
     @Override
