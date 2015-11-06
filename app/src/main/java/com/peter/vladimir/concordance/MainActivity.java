@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    //TODO delete and search buttons in relations
     //TODO decries line under word info
     //TODO save phrases
     //TODO ibtn search fix

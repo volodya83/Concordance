@@ -430,11 +430,11 @@ public abstract class SQLfunctions {
         _sqLiteDatabase.insert(TABLE_GROUPS, null, contentValues);
     }
 
-    public static void insertWordsToReletions(String relName, String relWord1, String relWord2) {
+    public static void insertWordsToRelations(String relName, String[] words) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("relation_name", relName);
-        contentValues.put("relation_word1", relWord1);
-        contentValues.put("relation_word2", relWord2);
+        contentValues.put("relation_word1", words[0]);
+        contentValues.put("relation_word2", words[1]);
         _sqLiteDatabase.insert(TABLE_RELATIONS, null, contentValues);
     }
 
@@ -450,7 +450,7 @@ public abstract class SQLfunctions {
                                         "GROUP BY group_name ", null);
     }
 
-    public static Cursor getReletions(){
+    public static Cursor getRelations(){
         return _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, relation_name " +
                                         "FROM Relations ", null);
     }
@@ -477,6 +477,21 @@ public abstract class SQLfunctions {
     public static void deletePhrase(int id) {
         _sqLiteDatabase.delete(TABLE_PHRASES, "_id="+id,null );
     }
+
+    public static Cursor getRelationContent(String relation_name) {
+        return _sqLiteDatabase.rawQuery("SELECT _id, relation_word1, relation_word2 " +
+                "FROM Relations " +
+                "WHERE relation_name='"+relation_name+"'", null);
+    }
+
+    public static void deleteRelation(String relation_name) {
+        _sqLiteDatabase.delete(TABLE_RELATIONS, "group_name='"+relation_name+"'",null );
+    }
+
+    public static void deletePairFromRelation(int id) {
+        _sqLiteDatabase.delete(TABLE_RELATIONS, "_id="+id,null );
+    }
+
 }
 
 

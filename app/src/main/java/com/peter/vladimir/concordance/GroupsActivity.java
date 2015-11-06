@@ -24,6 +24,7 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
     private static final String LOG_TAG = GroupsActivity.class.toString();
     private static final int GROUP = 1;
     private static final int PHRASE = 2;
+    private static final int RELATION = 3;
     private EditText et_grp_str;
     public static EditText et_grp_name;
     public static TextView tv_grp_name_title;
@@ -80,7 +81,10 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
         } else if (v == rbtn_grp_group) {
             changeLayout(GROUP);
             refreshFirstList();
-        }
+        } else if (v==rbtn_grp_relation){
+            changeLayout(RELATION);
+            refreshFirstList();
+        }else Toast.makeText(this, "Rbtn error", Toast.LENGTH_SHORT).show();  //Error
 
         if (v == ibtn_grp_plus) {
             if (grpStr.length() > 0 && grpName.length() > 0) {
@@ -90,14 +94,25 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
                     Cursor cursor = SQLfunctions.getGroupContent(grpName);
                     lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(this, cursor, R.layout.list_item_group_content, grpName));
                 } else if (selectedRbtn == rbtn_grp_phrase) {
-                    SQLfunctions.insertPhrase(et_grp_str.getText().toString());
+                    SQLfunctions.insertPhrase(grpStr);
+                    refreshSecondList(0,"",0);
+                }else if (selectedRbtn==rbtn_grp_relation){
+                    String[] words=grpStr.split("-");
+                    if(words.length!=2){
+                        Toast.makeText(this, "Pair is not correct", Toast.LENGTH_SHORT).show();
+                    }else {
+                        SQLfunctions.insertWordsToRelations(grpName, words);
+                        refreshFirstList();
+                        Cursor cursor = SQLfunctions.getRelationContent(grpName);
+                        lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(this, cursor, R.layout.list_item_group_content, grpName));
+                    }
                 }
             }
         }
     }
 
     private void changeLayout(int status) {
-        if (status == GROUP) {
+        if (status == GROUP || status==RELATION) {
             ViewGroup.LayoutParams params = tv_grp_1lst_title.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             tv_grp_1lst_title.setLayoutParams(params);
@@ -133,6 +148,8 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
             params = lv_grp_2lst.getLayoutParams();
             params.height = params.MATCH_PARENT;
             lv_grp_2lst.setLayoutParams(params);
+
+
         }
     }
 
@@ -178,7 +195,7 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
                     _context.startActivity(intent);
                 }
             }
-            if (selectedRbtn==rbtn_grp_phrase)
+            else if (selectedRbtn==rbtn_grp_phrase)
             {
               if(v.getId()==R.id.ibtn_grp_content_item_delete)
               {
@@ -190,7 +207,27 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
                   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                   _context.startActivity(intent);
               }
+            else if (selectedRbtn==rbtn_grp_relation){
+                  if (v.getId() == R.id.tv_grp_item_name) {
+                      et_grp_name.setText(_group_name);
+                      refreshSecondList(R.id.tv_grp_item_name, _group_name, 0);
+                  } else if (v.getId() == R.id.ibtn_grp_content_item_delete) {
+                      SQLfunctions.deletePairFromRelation(_idContent);// RowId
+                      refreshFirstList();
+                      tv_grp_2lst_title.setText("Pairs in Relation: " + _group_name);
+                      Cursor cursor = SQLfunctions.getRelationContent(_group_name);
+                      if (cursor.getCount() == 0) {
+                          et_grp_name.setText("");
+                      }
+                      lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content, _group_name));
 
+                  } else if (v.getId() == R.id.ibtn_grp_content_item_search) {
+                      Intent intent = new Intent(_context, WordActivity.class);
+                      intent.putExtra("strContent", _strContent);
+                      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                      _context.startActivity(intent);
+                  }
+              }
             }
         }
     }
@@ -200,6 +237,11 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
             Cursor cursor = SQLfunctions.getGroups();
             tv_grp_1lst_title.setText("Groups");
             tv_grp_2lst_title.setText("Words in group: ");
+            lv_grp_1lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_name, ""));
+        }else {
+            Cursor cursor = SQLfunctions.getRelations();
+            tv_grp_1lst_title.setText("Relations");
+            tv_grp_2lst_title.setText("Pairs in Relation: ");
             lv_grp_1lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_name, ""));
         }
     }
@@ -218,6 +260,14 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
         } else if (selectedRbtn==rbtn_grp_phrase) {
             Cursor cursor = SQLfunctions.getPhrases();
             lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content, ""));
+        }else if (selectedRbtn==rbtn_grp_relation){
+            if (status == 1)
+                tv_grp_2lst_title.setText("Pairs in Relation: ");
+            else {
+                tv_grp_2lst_title.setText("Pairs in Relation: " + group_name);
+            }
+            Cursor cursor = SQLfunctions.getRelationContent(group_name);
+            lv_grp_2lst.setAdapter(new MyGroupCursorAdapter(_context, cursor, R.layout.list_item_group_content, group_name));
         }
     }
 

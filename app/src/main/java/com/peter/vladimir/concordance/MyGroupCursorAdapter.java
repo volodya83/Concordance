@@ -20,6 +20,8 @@ public class MyGroupCursorAdapter extends CursorAdapter {
     private static final int COL_ID = 0;
     private static final int DELETE = 1;
     private static final int COL_PHRASE = 1;
+    private static final int COL_WORD1 = 1;
+    private static final int COL_WORD2 = 2;
     private int _resource;
     public Context _context;
     public String _group_name;
@@ -56,17 +58,23 @@ public class MyGroupCursorAdapter extends CursorAdapter {
         } else if (_resource == LIST_ITEM_GROUP_CONTENT) {
             ViewHolderList2 viewHolder2 = (ViewHolderList2) view.getTag();
             int idContent = cursor.getInt(COL_ID);
-            String strContent;
+            String strContent="";
             if (GroupsActivity.selectedRbtn.getId() == R.id.rbtn_grp_group) {
                 strContent = cursor.getString(COL_GROUP_CONTENT);
-                viewHolder2.tv_grp_item_content.setText(strContent);
-
-            } else //if(GroupsActivity.selectedRbtn.getId() == R.id.rbtn_grp_phrase)
+                viewHolder2.ibtn_grp_content_item_search.setOnClickListener(
+                        new GroupsActivity.MyClickListener(view, _group_name, _context, idContent, strContent));
+            } else if(GroupsActivity.selectedRbtn.getId() == R.id.rbtn_grp_phrase)
             {
                 strContent = cursor.getString(COL_PHRASE);
+                viewHolder2.ibtn_grp_content_item_search.setOnClickListener(
+                        new GroupsActivity.MyClickListener(view, _group_name, _context, idContent, strContent));
+            }else if (GroupsActivity.selectedRbtn.getId()==R.id.rbtn_grp_relation){
+                String word1=cursor.getString(COL_WORD1);
+                strContent = word1 +" - "+cursor.getString(COL_WORD2);
+                viewHolder2.ibtn_grp_content_item_search.setOnClickListener(
+                        new GroupsActivity.MyClickListener(view, _group_name, _context, idContent, word1));
             }
-            viewHolder2.ibtn_grp_content_item_search.setOnClickListener(
-                    new GroupsActivity.MyClickListener(view, _group_name, _context, idContent, strContent));
+            viewHolder2.tv_grp_item_content.setText(strContent);
             viewHolder2.ibtn_grp_content_item_delete.setOnClickListener(
                     new GroupsActivity.MyClickListener(view, _group_name, _context, idContent));
         }

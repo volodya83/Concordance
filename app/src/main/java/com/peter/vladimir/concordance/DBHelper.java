@@ -41,7 +41,6 @@ private Context _context;
                 "_id integer NOT NULL PRIMARY KEY AUTOINCREMENT," +
                 "relation_word1 text," +
                 "relation_word2 text," +
-                "relation_id integer NOT NULL," +
                 "relation_name text" +
                 ");";
         final String CREATE_TABLE_GROUPS = "CREATE TABLE Groups ( " +
@@ -114,12 +113,14 @@ private Context _context;
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Words");
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Texts");
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Authors");
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Relations");
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Groups");
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Word_Text_Rel");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Words ");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Texts ");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Authors ");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Relations ");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Groups ");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Word_Text_Rel ");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Phrases ");
+
         onCreate(sqLiteDatabase);
     }
 }
