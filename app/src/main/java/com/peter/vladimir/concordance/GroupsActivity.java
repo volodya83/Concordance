@@ -184,7 +184,13 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
               {
                   SQLfunctions.deletePhrase(_idContent);// RowId
                   refreshSecondList(0,"",0);
+              }else if (v.getId() == R.id.ibtn_grp_content_item_search) {
+                  Intent intent = new Intent(_context, WordActivity.class);
+                  intent.putExtra("strContent", _strContent);
+                  intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                  _context.startActivity(intent);
               }
+
             }
         }
     }

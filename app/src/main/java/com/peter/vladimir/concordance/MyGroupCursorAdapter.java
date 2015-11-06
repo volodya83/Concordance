@@ -56,57 +56,53 @@ public class MyGroupCursorAdapter extends CursorAdapter {
         } else if (_resource == LIST_ITEM_GROUP_CONTENT) {
             ViewHolderList2 viewHolder2 = (ViewHolderList2) view.getTag();
             int idContent = cursor.getInt(COL_ID);
-            String strContent, group_content;
+            String strContent;
             if (GroupsActivity.selectedRbtn.getId() == R.id.rbtn_grp_group) {
-                group_content = cursor.getString(COL_GROUP_CONTENT);
                 strContent = cursor.getString(COL_GROUP_CONTENT);
-                viewHolder2.tv_grp_item_content.setText(group_content);
-                viewHolder2.ibtn_grp_content_item_search.setOnClickListener(
-                        new GroupsActivity.MyClickListener(view, _group_name, _context, idContent, strContent));
-                viewHolder2.ibtn_grp_content_item_delete.setOnClickListener(
-                        new GroupsActivity.MyClickListener(view, _group_name, _context, idContent));
-            } else if (GroupsActivity.selectedRbtn.getId() == R.id.rbtn_grp_phrase) {
-                group_content = cursor.getString(COL_PHRASE);
+                viewHolder2.tv_grp_item_content.setText(strContent);
 
-
+            } else //if(GroupsActivity.selectedRbtn.getId() == R.id.rbtn_grp_phrase)
+            {
+                strContent = cursor.getString(COL_PHRASE);
             }
-
-
+            viewHolder2.ibtn_grp_content_item_search.setOnClickListener(
+                    new GroupsActivity.MyClickListener(view, _group_name, _context, idContent, strContent));
+            viewHolder2.ibtn_grp_content_item_delete.setOnClickListener(
+                    new GroupsActivity.MyClickListener(view, _group_name, _context, idContent));
         }
     }
-}
 
-private class ViewHolderList1 {
-    public TextView tv_grp_item_name;
-    public ImageButton ibtn_grp_item_delete;
-    public String group_name;
+    private class ViewHolderList1 {
+        public TextView tv_grp_item_name;
+        public ImageButton ibtn_grp_item_delete;
+        public String group_name;
 
-    public ViewHolderList1(final View view) {
-        tv_grp_item_name = (TextView) view.findViewById(R.id.tv_grp_item_name);
-        ibtn_grp_item_delete = (ImageButton) view.findViewById(R.id.ibtn_grp_item_delete);
-        ibtn_grp_item_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SQLfunctions.deleteGroup(group_name);
-                GroupsActivity.refreshFirstList();
-                GroupsActivity.refreshSecondList(_resource, group_name, DELETE);
-            }
-        });
+        public ViewHolderList1(final View view) {
+            tv_grp_item_name = (TextView) view.findViewById(R.id.tv_grp_item_name);
+            ibtn_grp_item_delete = (ImageButton) view.findViewById(R.id.ibtn_grp_item_delete);
+            ibtn_grp_item_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SQLfunctions.deleteGroup(group_name);
+                    GroupsActivity.refreshFirstList();
+                    GroupsActivity.refreshSecondList(_resource, group_name, DELETE);
+                }
+            });
+        }
     }
-}
 
 
-private class ViewHolderList2 {
-    public TextView tv_grp_item_content;
-    public ImageButton ibtn_grp_content_item_search;
-    public ImageButton ibtn_grp_content_item_delete;
-    public String group_name;
-    public int idContent;
+    private class ViewHolderList2 {
+        public TextView tv_grp_item_content;
+        public ImageButton ibtn_grp_content_item_search;
+        public ImageButton ibtn_grp_content_item_delete;
+        public String group_name;
+        public int idContent;
 
-    public ViewHolderList2(View view) {
-        tv_grp_item_content = (TextView) view.findViewById(R.id.tv_grp_item_content);
-        ibtn_grp_content_item_search = (ImageButton) view.findViewById(R.id.ibtn_grp_content_item_search);
-        ibtn_grp_content_item_delete = (ImageButton) view.findViewById(R.id.ibtn_grp_content_item_delete);
+        public ViewHolderList2(View view) {
+            tv_grp_item_content = (TextView) view.findViewById(R.id.tv_grp_item_content);
+            ibtn_grp_content_item_search = (ImageButton) view.findViewById(R.id.ibtn_grp_content_item_search);
+            ibtn_grp_content_item_delete = (ImageButton) view.findViewById(R.id.ibtn_grp_content_item_delete);
+        }
     }
-}
 }
