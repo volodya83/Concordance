@@ -82,7 +82,10 @@ public class MyArrayPhraseAdapter extends ArrayAdapter<PhraseData> {
 
                     str_context = SQLfunctions.getWordPhraseContext(lineStart, textId);
                     tv_context.setText(str_context);
-                    lay_context.setVisibility(View.VISIBLE);
+                    ViewGroup.LayoutParams params = lay_context.getLayoutParams();
+                    params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    lay_context.setLayoutParams(params);
+                    //lay_context.setVisibility(View.VISIBLE);
                 }
             });
             ibtn_viewText.setOnClickListener(new View.OnClickListener() {

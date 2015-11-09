@@ -91,7 +91,11 @@ public class MyGroupCursorAdapter extends CursorAdapter {
             ibtn_grp_item_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SQLfunctions.deleteGroup(group_name);
+                    if (GroupsActivity.selectedRbtn.getId()==R.id.rbtn_grp_group) {
+                        SQLfunctions.deleteGroup(group_name);
+                    }else if (GroupsActivity.selectedRbtn.getId()==R.id.rbtn_grp_relation){
+                        SQLfunctions.deleteRelation(group_name);
+                    }
                     GroupsActivity.refreshFirstList();
                     GroupsActivity.refreshSecondList(_resource, group_name, DELETE);
                 }

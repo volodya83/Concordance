@@ -30,11 +30,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    //TODO delete and search buttons in relations
-    //TODO decries line under word info
-    //TODO save phrases
-    //TODO ibtn search fix
-    //TODO add group and relations
+    //TODO index activity date format
     private static final String TAG = "MainActivity";
     private EditText et_texts_name;
     private EditText et_auth_name;

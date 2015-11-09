@@ -31,6 +31,10 @@
             android:name=".GroupsActivity"
             android:label="@string/title_activity_groups" >
         </activity>
+        <activity
+            android:name=".IndexActivity"
+            android:label="@string/title_activity_index" >
+        </activity>
     </application>
 
 </manifest>

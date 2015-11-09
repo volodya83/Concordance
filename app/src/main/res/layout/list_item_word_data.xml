@@ -83,11 +83,10 @@
     <LinearLayout
         android:id="@+id/lay_context"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:background="@android:color/white"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="invisible">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_context"

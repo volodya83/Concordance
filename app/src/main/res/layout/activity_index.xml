@@ -1,0 +1,86 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:background="@android:color/holo_blue_bright"
+    tools:context="com.peter.vladimir.concordance.IndexActivity">
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#c8fffe"
+            android:textSize="7pt"
+            android:text="Choose the \nfile name:" />
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:background="#ffffff"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/et_index_file_name" />
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.1"
+            android:id="@+id/ibtn_save_file"
+            android:src="@android:drawable/ic_menu_save" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:layout_weight="8"
+            android:background="#ffffff"
+            android:textSize="9pt"
+            android:id="@+id/tv_index_grp_name" />
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/ibtn_index_grp_search"
+            android:src="@android:drawable/ic_menu_search" />
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#ffffff"
+        android:id="@+id/lv_texts_in_words" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Group index file"
+        android:id="@+id/tv_index_title"
+        android:background="#c8fffe"
+        android:layout_marginTop="3dp"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="New Text"
+        android:layout_weight="2"
+        android:background="#ffffff"
+        android:id="@+id/tv_index_file" />
+</LinearLayout>

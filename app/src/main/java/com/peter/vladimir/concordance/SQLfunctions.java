@@ -189,18 +189,6 @@ public abstract class SQLfunctions {
         word = word.toLowerCase();
         Cursor word_id_cursor;
         ContentValues contentValues = new ContentValues();
-//        String[] arg=new String[1];
-//        arg[0]=word;
-//        contentValues.put("word", word);
-//        long word_id = _sqLiteDatabase.insert(TABLE_WORDS, "", contentValues);
-//        if (word_id == (-1)) {
-//            word_id_cursor = _sqLiteDatabase.rawQuery("SELECT _id   FROM Words WHERE word = ?;", arg);
-//            word_id_cursor.moveToFirst();
-//            word_id = word_id_cursor.getLong(0);
-//        }
-//        //Toast.makeText(_context, "addWordToDB word_id=" + word_id, Toast.LENGTH_SHORT).show();
-//
-//        contentValues = new ContentValues();
         contentValues.put("word_id", word);
         contentValues.put("text_id", _cur_text_id);
         contentValues.put("word_text_type", word_type);
@@ -213,8 +201,8 @@ public abstract class SQLfunctions {
 
     public static Cursor searchAllTexts() {
         Cursor cursor = _sqLiteDatabase.rawQuery("SELECT _id, text_name, author_name, text_date " +
-                                                 "FROM ( SELECT text_id, GROUP_CONCAT(author_name) AS author_name " +
-                                                        "FROM Authors GROUP BY text_id) JOIN Texts ON text_id=_id", null);
+                "FROM ( SELECT text_id, GROUP_CONCAT(author_name) AS author_name " +
+                "FROM Authors GROUP BY text_id) JOIN Texts ON text_id=_id", null);
         setTextMap(cursor);
         return cursor;
     }
@@ -425,22 +413,22 @@ public abstract class SQLfunctions {
 
     public static void insertWordToGroup(String grpName, String grpStr) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("group_name", grpName);
-        contentValues.put("word_str", grpStr);
+        contentValues.put("group_name", grpName.trim());
+        contentValues.put("word_str", grpStr.trim());
         _sqLiteDatabase.insert(TABLE_GROUPS, null, contentValues);
     }
 
     public static void insertWordsToRelations(String relName, String[] words) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("relation_name", relName);
-        contentValues.put("relation_word1", words[0]);
-        contentValues.put("relation_word2", words[1]);
+        contentValues.put("relation_name", relName.trim());
+        contentValues.put("relation_word1", words[0].trim());
+        contentValues.put("relation_word2", words[1].trim());
         _sqLiteDatabase.insert(TABLE_RELATIONS, null, contentValues);
     }
 
     public static void insertPhrase(String phrase) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("phrase_str", phrase);
+        contentValues.put("phrase_str", phrase.trim());
         _sqLiteDatabase.insert(TABLE_PHRASES, null, contentValues);
     }
 
@@ -452,7 +440,8 @@ public abstract class SQLfunctions {
 
     public static Cursor getRelations(){
         return _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, relation_name " +
-                                        "FROM Relations ", null);
+                                        "FROM Relations " +
+                                        "GROUP BY relation_name ", null);
     }
 
     public static Cursor getPhrases(){
@@ -480,16 +469,29 @@ public abstract class SQLfunctions {
 
     public static Cursor getRelationContent(String relation_name) {
         return _sqLiteDatabase.rawQuery("SELECT _id, relation_word1, relation_word2 " +
-                "FROM Relations " +
-                "WHERE relation_name='"+relation_name+"'", null);
+                                        "FROM Relations " +
+                                        "WHERE relation_name='"+relation_name+"'", null);
     }
 
     public static void deleteRelation(String relation_name) {
-        _sqLiteDatabase.delete(TABLE_RELATIONS, "group_name='"+relation_name+"'",null );
+        _sqLiteDatabase.delete(TABLE_RELATIONS, "relation_name='"+relation_name+"'",null );
     }
 
     public static void deletePairFromRelation(int id) {
         _sqLiteDatabase.delete(TABLE_RELATIONS, "_id="+id,null );
+    }
+
+    public static Cursor groupDataInAllText(String groupName) {
+        return _sqLiteDatabase.rawQuery("", null)
+
+
+//        return _sqLiteDatabase.rawQuery( "SELECT text_id, text_name, word_text_line, word_position, Word_Text_Rel._id " +
+//                "FROM Word_Text_Rel JOIN Texts ON text_id=Texts._id "+
+//                "WHERE word_id IN (SELECT _id " +
+//                "FROM Words " +
+//                "WHERE word IN ( SELECT word_str " +
+//                                "FROM Groups " +
+//                                "WHERE group_name='"+groupName+"' ) ) " , null);
     }
 
 }

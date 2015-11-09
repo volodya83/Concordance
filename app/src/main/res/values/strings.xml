@@ -14,4 +14,5 @@
     <string name="select_text">Select \n Text:</string>
     <string name="select_source">Select source</string>
     <string name="title_activity_groups">GroupsActivity</string>
+    <string name="title_activity_index">IndexActivity</string>
 </resources>
