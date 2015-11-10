@@ -482,16 +482,14 @@ public abstract class SQLfunctions {
     }
 
     public static Cursor groupDataInAllText(String groupName) {
-        return _sqLiteDatabase.rawQuery("", null)
+        String wordIdList ="(SELECT Words._id, word_str " +
+                            "FROM Groups LEFT OUTER JOIN Words ON word_str=word " +
+                            "WHERE group_name='"+groupName+"' ) ";
+        String wordRel="( SELECT text_name, word_text_line, word_position, word_id " +
+                        " FROM Word_Text_Rel JOIN Texts ON Word_Text_Rel.text_id=Texts._id )";
+        return _sqLiteDatabase.rawQuery("SELECT word_str, text_name, word_text_line, word_position " +
+                                        "FROM "+wordIdList+" AS Wil LEFT OUTER JOIN "+wordRel+" AS Wrel ON Wil._id=Wrel.word_id ", null);
 
-
-//        return _sqLiteDatabase.rawQuery( "SELECT text_id, text_name, word_text_line, word_position, Word_Text_Rel._id " +
-//                "FROM Word_Text_Rel JOIN Texts ON text_id=Texts._id "+
-//                "WHERE word_id IN (SELECT _id " +
-//                "FROM Words " +
-//                "WHERE word IN ( SELECT word_str " +
-//                                "FROM Groups " +
-//                                "WHERE group_name='"+groupName+"' ) ) " , null);
     }
 
 }

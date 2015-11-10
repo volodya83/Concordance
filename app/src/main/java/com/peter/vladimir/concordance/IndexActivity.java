@@ -3,18 +3,27 @@ package com.peter.vladimir.concordance;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class IndexActivity extends AppCompatActivity {
+public class IndexActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String LOG_TAG = IndexActivity.class.toString();
+    private static final int COL_WORD = 0;
+    private static final int COL_TEXT_NAME = 1;
+    private static final int COL_LINE = 2;
+    private static final int COL_POSITION = 3;
+
     private EditText et_index_file_name;
     private ImageButton ibtn_save_file;
     private TextView tv_index_grp_name;
@@ -36,17 +45,44 @@ public class IndexActivity extends AppCompatActivity {
         tv_index_title = (TextView)findViewById(R.id.tv_index_title);
         tv_index_grp_name = (TextView)findViewById(R.id.tv_index_grp_name);
         ibtn_index_grp_search = (ImageButton)findViewById(R.id.ibtn_index_grp_search);
+        ibtn_index_grp_search.setOnClickListener(this);
         ibtn_save_file = (ImageButton)findViewById(R.id.ibtn_save_file);
         lv_texts_in_words = (ListView)findViewById(R.id.lv_texts_in_words);
         refreshTextList();
         if (getIntent().hasExtra("groupName")) {
             groupName = getIntent().getExtras().getString("groupName");
             tv_index_grp_name.setText(groupName);
-            //Calendar calendar = Calendar.getInstance();
-            //Date date = new Date();
             tv_index_title.setText(groupName+" index");
             et_index_file_name.setText(groupName + "-" + DateFormat.getDateInstance().format(new Date()));
         }
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v==ibtn_index_grp_search){
+            Log.d(LOG_TAG, "onClick grpSearch");
+            String groupName = tv_index_grp_name.getText().toString();
+            tv_index_file.setText(txtBuilder(groupName));
+        }
+    }
+
+    private StringBuffer txtBuilder(String groupName){
+        StringBuffer str = new StringBuffer("");
+        Cursor cursor = SQLfunctions.groupDataInAllText(groupName);
+        //Toast.makeText(this, ""+cursor.getCount(), Toast.LENGTH_SHORT).show();
+        if (cursor!=null) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                str.append(cursor.getString(COL_WORD)+": ");
+                if (!cursor.isNull(1)) {
+                    str.append("in text: " + cursor.getString(COL_TEXT_NAME))
+                            .append(", line: " + cursor.getInt(COL_LINE)).append(", position: " + cursor.getInt(COL_POSITION)).append('\n');
+                }else str.append("not found \n");
+                cursor.moveToNext();
+            }
+        }else Toast.makeText(this, "Cursor is null", Toast.LENGTH_SHORT).show();
+        return str;
     }
 
     public void refreshTextList() {
@@ -76,4 +112,5 @@ public class IndexActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
