@@ -271,18 +271,19 @@ public abstract class SQLfunctions {
 
     public static ArrayList<PhraseData> phraseDataInTexts(String[] search_str, String texts) {
         String phrase = listOfWords(search_str);
-        int[] phraseIdsArr=cursorToArrInt(_sqLiteDatabase.rawQuery("SELECT _id " +
-                "FROM Words " +
-                "WHERE word IN " + phrase, null), search_str);
+        Cursor cursor = _sqLiteDatabase.rawQuery("SELECT _id " +
+                                                "FROM Words " +
+                                                "WHERE word IN " + phrase, null);
+        int[] phraseIdsArr=cursorToArrInt(cursor, search_str);
         if (phraseIdsArr==null)
         {
             Toast.makeText(_context, "Phrase not found", Toast.LENGTH_SHORT).show();
             //return null;
         }
         String phraseIds = listOfTexts(phraseIdsArr);
-        Cursor cursor=_sqLiteDatabase.rawQuery("SELECT * " +
-                "FROM Word_Text_Rel " +
-                "WHERE text_id IN " + texts + "AND word_id IN " + phraseIds, null);
+        cursor=_sqLiteDatabase.rawQuery("SELECT * " +
+                                        "FROM Word_Text_Rel " +
+                                        "WHERE text_id IN " + texts + "AND word_id IN " + phraseIds, null);
         return new PhraseData().cursorToArrPhrase(cursor, phraseIdsArr);
     }
 
@@ -492,6 +493,18 @@ public abstract class SQLfunctions {
 
     }
 
+
+    public static Cursor groupDataInText(String groupName, String arg) {
+        String wordIdList ="(SELECT Words._id, word_str " +
+                "FROM Groups LEFT OUTER JOIN Words ON word_str=word " +
+                "WHERE group_name='"+groupName+"' ) ";
+        String wordRel="( SELECT text_name, word_text_line, word_position, word_id " +
+                " FROM Word_Text_Rel JOIN Texts ON Word_Text_Rel.text_id=Texts._id " +
+                " WHERE Texts._id IN "+arg+")";
+        return _sqLiteDatabase.rawQuery("SELECT word_str, text_name, word_text_line, word_position " +
+                "FROM "+wordIdList+" AS Wil LEFT OUTER JOIN "+wordRel+" AS Wrel ON Wil._id=Wrel.word_id ", null);
+
+    }
 }
 
 

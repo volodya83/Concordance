@@ -21,8 +21,6 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.peter.vladimir.concordance.SQLfunctions.listOfWords;
-
 public class WordActivity extends AppCompatActivity implements View.OnClickListener {
     private static EditText et_search_word;
     private static TextView tv_word_data_info;

@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    //TODO sql function to specific texts
+    //TODO phrase in specific texts error
     //TODO save file
     private static final String TAG = "MainActivity";
     private EditText et_texts_name;

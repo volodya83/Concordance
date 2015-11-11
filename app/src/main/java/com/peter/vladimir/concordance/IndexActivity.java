@@ -13,7 +13,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -61,15 +63,30 @@ public class IndexActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (v==ibtn_index_grp_search){
-            Log.d(LOG_TAG, "onClick grpSearch");
-            String groupName = tv_index_grp_name.getText().toString();
-            tv_index_file.setText(txtBuilder(groupName));
+            int[] text_id_arr = listAdapter.get_text_id_arr();
+            Integer text_size = text_id_arr[text_id_arr.length - 1];
+            if (text_size != 0) {
+                String groupName = tv_index_grp_name.getText().toString();
+                tv_index_file.setText(txtBuilder(groupName, text_id_arr));
+            } else {
+                Log.d(LOG_TAG, "onClick grpSearch");
+                String groupName = tv_index_grp_name.getText().toString();
+                tv_index_file.setText(txtBuilder(groupName, null));
+            }
         }
     }
 
-    private StringBuffer txtBuilder(String groupName){
+    private StringBuffer txtBuilder(String groupName, int[] text_id_arr){
         StringBuffer str = new StringBuffer("");
-        Cursor cursor = SQLfunctions.groupDataInAllText(groupName);
+        Cursor cursor;
+        if (text_id_arr == null) {
+            cursor = SQLfunctions.groupDataInAllText(groupName);
+        }else{
+            int[] textIdArr = Arrays.copyOf(text_id_arr, text_id_arr.length);
+            textIdArr[text_id_arr.length-1]=0;
+            String arg = SQLfunctions.listOfTexts(textIdArr);
+            cursor = SQLfunctions.groupDataInText(groupName, arg);
+        }
         //Toast.makeText(this, ""+cursor.getCount(), Toast.LENGTH_SHORT).show();
         if (cursor!=null) {
             cursor.moveToFirst();
