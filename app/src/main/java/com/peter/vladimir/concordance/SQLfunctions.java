@@ -271,7 +271,7 @@ public abstract class SQLfunctions {
 
     public static ArrayList<PhraseData> phraseDataInTexts(String[] search_str, String texts) {
         String phrase = listOfWords(search_str);
-        Cursor cursor = _sqLiteDatabase.rawQuery("SELECT _id " +
+        Cursor cursor = _sqLiteDatabase.rawQuery("SELECT _id, word " +
                                                 "FROM Words " +
                                                 "WHERE word IN " + phrase, null);
         int[] phraseIdsArr=cursorToArrInt(cursor, search_str);

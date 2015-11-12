@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ public class IndexActivity extends AppCompatActivity implements View.OnClickList
     private Cursor cursor_texts;
     private MyCursorAdapter listAdapter;
     private String groupName="";
+    private StringBuffer buffer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class IndexActivity extends AppCompatActivity implements View.OnClickList
         ibtn_index_grp_search = (ImageButton)findViewById(R.id.ibtn_index_grp_search);
         ibtn_index_grp_search.setOnClickListener(this);
         ibtn_save_file = (ImageButton)findViewById(R.id.ibtn_save_file);
+        ibtn_save_file.setOnClickListener(this);
         lv_texts_in_words = (ListView)findViewById(R.id.lv_texts_in_words);
         refreshTextList();
         if (getIntent().hasExtra("groupName")) {
@@ -67,12 +70,18 @@ public class IndexActivity extends AppCompatActivity implements View.OnClickList
             Integer text_size = text_id_arr[text_id_arr.length - 1];
             if (text_size != 0) {
                 String groupName = tv_index_grp_name.getText().toString();
-                tv_index_file.setText(txtBuilder(groupName, text_id_arr));
+                buffer = txtBuilder(groupName, text_id_arr);
+                tv_index_file.setText(buffer);
             } else {
                 Log.d(LOG_TAG, "onClick grpSearch");
                 String groupName = tv_index_grp_name.getText().toString();
-                tv_index_file.setText(txtBuilder(groupName, null));
+                buffer = txtBuilder(groupName, null);
+                tv_index_file.setText(buffer);
             }
+            ibtn_save_file.setVisibility(View.VISIBLE);
+        }else if (v==ibtn_save_file){
+
+            File file = new File()
         }
     }
 

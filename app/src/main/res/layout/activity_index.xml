@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.1"
             android:id="@+id/ibtn_save_file"
+            android:visibility="invisible"
             android:src="@android:drawable/ic_menu_save" />
     </LinearLayout>
 

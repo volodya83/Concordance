@@ -109,6 +109,7 @@ public class WordActivity extends AppCompatActivity implements View.OnClickListe
 
         int[] text_id_arr = listAdapter.get_text_id_arr();
         Integer text_size = text_id_arr[text_id_arr.length - 1];
+        text_id_arr=Arrays.copyOf(text_id_arr, text_id_arr.length-1);
         if (line_source.length()>0 && word_source.length()>0){
             if (text_size!=1){
                 Toast.makeText(this,"To search word by source data you need select only one text", Toast.LENGTH_SHORT).show();
