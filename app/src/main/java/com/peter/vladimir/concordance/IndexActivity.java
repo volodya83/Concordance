@@ -1,6 +1,7 @@
 package com.peter.vladimir.concordance;
 
 import android.database.Cursor;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.util.Arrays;
@@ -81,7 +84,17 @@ public class IndexActivity extends AppCompatActivity implements View.OnClickList
             ibtn_save_file.setVisibility(View.VISIBLE);
         }else if (v==ibtn_save_file){
 
-            File file = new File()
+            File file_dir = new File(Environment.getExternalStorageDirectory() + "/Download");
+            File file=new File(file_dir, et_index_file_name.getText().toString()+".txt");
+            try {
+                FileWriter fileWriter=new FileWriter(file);
+                fileWriter.append(buffer);
+                fileWriter.flush();
+                fileWriter.close();
+                Toast.makeText(this, "Saved in Download folder", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
