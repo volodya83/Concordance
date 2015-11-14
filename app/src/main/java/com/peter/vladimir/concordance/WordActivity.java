@@ -34,6 +34,8 @@ public class WordActivity extends AppCompatActivity implements View.OnClickListe
     private MyArrayPhraseAdapter phraseAdapter;
     private EditText et_line_in_source;
     private EditText et_word_in_source;
+    private int[] text_id_arr;
+    private Integer text_size;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,17 @@ public class WordActivity extends AppCompatActivity implements View.OnClickListe
                 this.startActivity(new Intent(this, GroupsActivity.class));
                 break;
             }
+            case R.id.mbtn_statistic: {
+                text_id_arr = listAdapter.get_text_id_arr();
+                text_size = text_id_arr[text_id_arr.length - 1];
+                Toast.makeText(this, "Statistic for "+text_size+" texts", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, StatisticActivity.class);
+                intent.putExtra("text_id", text_id_arr);
+                intent.putExtra("text_size", text_size);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                this.startActivity(intent);
+                break;
+            }
         }
 
         //noinspection SimplifiableIfStatement
@@ -107,8 +120,8 @@ public class WordActivity extends AppCompatActivity implements View.OnClickListe
         line_source = et_line_in_source.getText().toString();
         word_source = et_word_in_source.getText().toString();
 
-        int[] text_id_arr = listAdapter.get_text_id_arr();
-        Integer text_size = text_id_arr[text_id_arr.length - 1];
+        text_id_arr = listAdapter.get_text_id_arr();
+        text_size = text_id_arr[text_id_arr.length - 1];
         text_id_arr=Arrays.copyOf(text_id_arr, text_id_arr.length-1);
         if (line_source.length()>0 && word_source.length()>0){
             if (text_size!=1){

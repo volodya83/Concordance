@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    //TODO phrase in specific texts error
-    //TODO save file
     private static final String TAG = "MainActivity";
     private EditText et_texts_name;
     private EditText et_auth_name;

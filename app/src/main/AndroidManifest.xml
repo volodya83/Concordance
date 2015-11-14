@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.peter.vladimir.concordance" >
 
-    <uses-permission android:name="ANDROID.PERMISSION.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
@@ -34,6 +34,10 @@
         <activity
             android:name=".IndexActivity"
             android:label="@string/title_activity_index" >
+        </activity>
+        <activity
+            android:name=".StatisticActivity"
+            android:label="@string/title_activity_statistic" >
         </activity>
     </application>
 

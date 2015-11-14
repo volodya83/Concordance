@@ -290,17 +290,17 @@ public abstract class SQLfunctions {
     public static ArrayList<PhraseData> phraseDataInAllTexts(String[] search_str) {
         String phrase = listOfWords(search_str);
         int[] phraseIdsArr=cursorToArrInt(_sqLiteDatabase.rawQuery("SELECT _id, word " +
-                                                                         "FROM Words " +
-                                                                         "WHERE word IN "+phrase, null), search_str);
+                "FROM Words " +
+                "WHERE word IN " + phrase, null), search_str);
         if (phraseIdsArr==null)
         {
             Toast.makeText(_context, "Phrase not found", Toast.LENGTH_SHORT).show();
             //return null;
         }
         String phraseIds = listOfTexts(phraseIdsArr);
-        Cursor cursor=_sqLiteDatabase.rawQuery( "SELECT * " +
-                                                "FROM Word_Text_Rel " +
-                                                "WHERE word_id IN "+phraseIds, null);
+        Cursor cursor=_sqLiteDatabase.rawQuery("SELECT * " +
+                "FROM Word_Text_Rel " +
+                "WHERE word_id IN " + phraseIds, null);
         return new PhraseData().cursorToArrPhrase(cursor, phraseIdsArr);
     }
 
@@ -504,6 +504,16 @@ public abstract class SQLfunctions {
         return _sqLiteDatabase.rawQuery("SELECT word_str, text_name, word_text_line, word_position " +
                 "FROM "+wordIdList+" AS Wil LEFT OUTER JOIN "+wordRel+" AS Wrel ON Wil._id=Wrel.word_id ", null);
 
+    }
+
+    public static String getStatisticAllTexts() {
+
+        return null;
+    }
+
+    public static String getStatistic(int[] textIds) {
+
+        return null;
     }
 }
 

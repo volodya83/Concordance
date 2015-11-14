@@ -20,4 +20,8 @@
         android:title="Groups"
         app:showAsAction="always"
         />
+    <item android:id="@+id/mbtn_statistic"
+        android:title="Statistics"
+        app:showAsAction="always"
+        />
 </menu>
