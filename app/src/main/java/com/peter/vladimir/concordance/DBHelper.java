@@ -27,6 +27,7 @@ private Context _context;
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+
         final String CREATE_TABLE_WORDS ="CREATE TABLE Words (" +
                 "_id integer NOT NULL PRIMARY KEY AUTOINCREMENT," +
                 "word text UNIQUE," +
@@ -69,6 +70,8 @@ private Context _context;
                 "word_size integer, " +
                 "FOREIGN KEY(text_id) REFERENCES Texts ( text_id ) " +
                 ");";
+                //Trigger on each inserted  word to Word_Text_Rel insert or ignore the word to Words table,
+                // and update word_id in Word_Text_Rel
         final String CREATE_TRIGGER_WORD_TEXT_REL = "CREATE TRIGGER Word_Text_Rel_Trigger01 " +
                 " AFTER INSERT " +
                 " ON Word_Text_Rel " +
@@ -79,11 +82,13 @@ private Context _context;
                 "SET word_id=(SELECT _id FROM Words WHERE word=new.word_id) " +
                 "WHERE rowid=new.rowid; " +
                 "END ";
+                //On delete text from Texts, delete all words of this text from data base
         final String CREATE_TRIGGER_TEXTS="CREATE TRIGGER TEXTS_DELETE_TRIGGER01 " +
                 "AFTER DELETE ON Texts " +
                 "BEGIN " +
                 "DELETE FROM Word_Text_Rel WHERE text_id= old._id; " +
-                "DELETE FROM Words WHERE _id NOT IN (SELECT word_id FROM Word_Text_Rel) AND _id>14; " +
+                "DELETE FROM Words WHERE _id NOT IN (SELECT word_id FROM Word_Text_Rel) AND _id>14 ;" +
+                "DELETE FROM Authors WHERE _id= old._id ; " +
                 "END";
         sqLiteDatabase.execSQL(CREATE_TABLE_WORDS);
         sqLiteDatabase.execSQL(CREATE_TABLE_TEXTS);
@@ -96,7 +101,7 @@ private Context _context;
         sqLiteDatabase.execSQL(CREATE_TRIGGER_TEXTS);
         initSymbols(sqLiteDatabase);
     }
-
+        //For improve db inserting words to table Words, we are insert symbols only once on initialize
     private void initSymbols(SQLiteDatabase sqLiteDatabase) {
         String symbols = ".,(){}\"!?:;@&";
         ContentValues contentValues;
@@ -110,7 +115,6 @@ private Context _context;
         int last_symbol_id=(int)sqLiteDatabase.insert("Words", "", contentValues);
         if (last_symbol_id!=14)
             Toast.makeText(_context,"Last symbol_id="+last_symbol_id,Toast.LENGTH_LONG).show();
-
     }
 
     @Override

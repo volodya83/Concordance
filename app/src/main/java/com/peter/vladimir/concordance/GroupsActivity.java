@@ -91,11 +91,13 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
             refreshFirstList();
             refreshSecondList(0, "", 0);
         } else if (v == ibtn_group_index) {
-            Toast.makeText(this, "Group index "+grpName, Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(_context, IndexActivity.class);
-            intent.putExtra("groupName", grpName);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            _context.startActivity(intent);
+            if (grpName.length()>0) {
+                Toast.makeText(this, "Group index " + grpName, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(_context, IndexActivity.class);
+                intent.putExtra("groupName", grpName);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                _context.startActivity(intent);
+            }else Toast.makeText(this, "You need select group for index", Toast.LENGTH_SHORT).show();
         } else if (v == ibtn_grp_plus) {
             if (selectedRbtn == rbtn_grp_group) {
                 if (grpStr.length() > 0 && grpName.length() > 0) {
@@ -304,7 +306,7 @@ public class GroupsActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_word, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 

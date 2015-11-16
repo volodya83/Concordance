@@ -36,7 +36,7 @@ public abstract class SQLfunctions {
         _context = context;
         _sqLiteDatabase = dbHelper.getWritableDatabase();
     }
-
+        //Separating each word of the text and insert in one transaction
     public static void loadText(StringBuilder text, StringBuilder[] text_data) {
         _cur_text_id = addTextData(text_data);
         _line = 1;
@@ -152,28 +152,23 @@ public abstract class SQLfunctions {
         _sqLiteDatabase.setTransactionSuccessful();
         _sqLiteDatabase.endTransaction();
     }
-
+        //Inserting text information in Texts and Authors tables
     private static long addTextData(StringBuilder[] text_data) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("text_name", text_data[0].toString());
         contentValues.put("text_date", text_data[1].toString());
         long text_id = _sqLiteDatabase.insert(TABLE_TEXTS, "", contentValues);
-//        if (text_id == (-1))
-//            Toast.makeText(_context, "addTextData=-1 text_name=" + text_data[0], Toast.LENGTH_SHORT).show();
 
         String[] authors = text_data[2].toString().split(",");
         for (int i = 0; i < authors.length; i++) {
             contentValues = new ContentValues();
             contentValues.put("author_name", authors[i].trim());
             contentValues.put("text_id", text_id);
-            long answer = _sqLiteDatabase.insert(TABLE_AUTHORS, "", contentValues);
-//            if (answer == (-1))
-//                Toast.makeText(_context, "addTextData=-1 author=" + authors[i], Toast.LENGTH_SHORT).show();
-
+            _sqLiteDatabase.insert(TABLE_AUTHORS, "", contentValues);
         }
         return text_id;
     }
-
+        //Insert symbol to Word_text_rel table without check/insert Words table
     private static void addSymbolToDB(long symbol_id) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("word_id", symbol_id + 1);
@@ -181,12 +176,11 @@ public abstract class SQLfunctions {
         contentValues.put("word_text_type", SYMBOL);
         contentValues.put("word_text_line", _line);
         contentValues.put("word_position", 0);
-        long answer = _sqLiteDatabase.insert(TABLE_WORD_TEXT_REL, "", contentValues);
+        _sqLiteDatabase.insert(TABLE_WORD_TEXT_REL, "", contentValues);
     }
-
+        //Insert word to Word_text_rel and insert or ignore to Words
     private static void addWordToDB(String word, int word_type, int word_size, int sent_num) {
         word = word.toLowerCase();
-        Cursor word_id_cursor;
         ContentValues contentValues = new ContentValues();
         contentValues.put("word_id", word);
         contentValues.put("text_id", _cur_text_id);
@@ -195,70 +189,65 @@ public abstract class SQLfunctions {
         contentValues.put("word_text_sentence", sent_num);
         contentValues.put("word_text_line", _line);
         contentValues.put("word_position", _word_position);
-        long answer2 = _sqLiteDatabase.insert(TABLE_WORD_TEXT_REL, "", contentValues);
+        _sqLiteDatabase.insert(TABLE_WORD_TEXT_REL, "", contentValues);
     }
-
+        //Return list of all texts information
     public static Cursor searchAllTexts() {
         Cursor cursor = _sqLiteDatabase.rawQuery("SELECT _id, text_name, author_name, text_date " +
-                "FROM ( SELECT text_id, GROUP_CONCAT(author_name) AS author_name " +
-                "FROM Authors GROUP BY text_id) JOIN Texts ON text_id=_id", null);
-        setTextMap(cursor);
+                                                "FROM ( SELECT text_id, GROUP_CONCAT(author_name) AS author_name " +
+                                                        "FROM Authors GROUP BY text_id) JOIN Texts ON text_id=_id", null);
+        //setTextMap(cursor);
         return cursor;
     }
-
+        //Return list of texts that found by name of text or author
     public static Cursor searchTexts(String[] arg) {
-        Cursor cursor = _sqLiteDatabase.rawQuery("SELECT _id, text_name, author_name, text_date " +
-                "FROM ( SELECT text_id, GROUP_CONCAT(author_name) AS author_name " +
-                "FROM Authors GROUP BY text_id) JOIN Texts ON text_id=_id " +
-                "WHERE text_name LIKE ? AND author_name LIKE ?", arg);
-        return cursor;
+        return  _sqLiteDatabase.rawQuery("SELECT _id, text_name, author_name, text_date " +
+                                        "FROM ( SELECT text_id, GROUP_CONCAT(author_name) AS author_name " +
+                                                "FROM Authors GROUP BY text_id) JOIN Texts ON text_id=_id " +
+                                                "WHERE text_name LIKE ? AND author_name LIKE ?", arg);
     }
-
+        //Return all words of specific text to view whole text
     public static Cursor viewText(Integer text_id) {
         String[] arg = new String[1];
         arg[0] = text_id.toString();
-        Cursor cursor = _sqLiteDatabase.rawQuery("SELECT word, word_text_type, word_text_line " +
-                                                 "FROM Words JOIN Word_Text_Rel ON Words._id=Word_Text_Rel.word_id " +
-                                                 "WHERE Word_Text_Rel.text_id=? ", arg);
-        return cursor;
+        return _sqLiteDatabase.rawQuery(" SELECT word, word_text_type, word_text_line " +
+                                         "FROM Words JOIN Word_Text_Rel ON Words._id=Word_Text_Rel.word_id " +
+                                         "WHERE Word_Text_Rel.text_id=? ", arg);
     }
-
+        //Return list of words from specific texts, sorted by alphabet
     public static Cursor allWordsInTexts(String arg) {
-        Cursor cursor = _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, word " +
-                                                 "FROM Words JOIN (SELECT DISTINCT word_id " +
-                                                                  "FROM Word_Text_Rel " +
-                                                                  "WHERE text_id IN " + arg + ")ON Words._id=word_id " +
-                                                 "WHERE _id>14 " +
-                                                 "ORDER BY word ASC", null);
-
-        return cursor;
+        return _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, word " +
+                                         "FROM Words JOIN (SELECT DISTINCT word_id " +
+                                                          "FROM Word_Text_Rel " +
+                                                          "WHERE text_id IN " + arg + ")ON Words._id=word_id " +
+                                         "WHERE _id>14 " +
+                                         "ORDER BY word ASC", null);
     }
-
+    //Return list of all words in db, sorted by alphabet
     public static Cursor allWords() {
-        Cursor cursor = _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, word " +
-                                                 "FROM Words " +
-                                                 "WHERE _id>14 " +
-                                                 "ORDER BY word ASC ", null);
-        return cursor;
+        return  _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, word " +
+                                         "FROM Words " +
+                                         "WHERE _id>14 " +
+                                         "ORDER BY word ASC ", null);
     }
-
+        //Delete text(executed trigger that delete all words of text and all info)
     public static int deleteText(Integer text_id) {
         String[] arg = new String[1];
         arg[0] = text_id.toString();
         return _sqLiteDatabase.delete(TABLE_TEXTS, "_id=?", arg);
     }
-
+        //Return information about word in specific texts
     public static Cursor wordDataInTexts(String arg, String[] search_str) {
-        Cursor cursor=_sqLiteDatabase.rawQuery("SELECT text_id, text_name, word_text_line, word_position, Word_Text_Rel._id " +
+        return _sqLiteDatabase.rawQuery("SELECT text_id, text_name, word_text_line, word_position, Word_Text_Rel._id " +
                 "FROM Word_Text_Rel JOIN Texts ON text_id=Texts._id " +
-                "WHERE word_id IN (SELECT _id " +
+                "WHERE word_id IN ( SELECT _id " +
                 "FROM Words " +
                 "WHERE word=? AND text_id IN " + arg + ")", search_str);
-        return cursor;
     }
 
+    //Return information about word in all texts
     public static Cursor wordDataInAllText(String[] search_str) {
-        Cursor cursor=_sqLiteDatabase.rawQuery("SELECT text_id, text_name, word_text_line, word_position, Word_Text_Rel._id " +
+        Cursor cursor = _sqLiteDatabase.rawQuery("SELECT text_id, text_name, word_text_line, word_position, Word_Text_Rel._id " +
                 "FROM Word_Text_Rel JOIN Texts ON text_id=Texts._id " +
                 "WHERE word_id IN (SELECT _id " +
                 "FROM Words " +
@@ -266,16 +255,16 @@ public abstract class SQLfunctions {
         return cursor;
     }
 
+    //Return information about phrase in specific texts
     public static ArrayList<PhraseData> phraseDataInTexts(String[] search_str, String texts) {
         String phrase = listOfWords(search_str);
         Cursor cursor = _sqLiteDatabase.rawQuery("SELECT _id, word " +
                 "FROM Words " +
                 "WHERE word IN " + phrase, null);
-        int[] phraseIdsArr=cursorToArrInt(cursor, search_str);
+        int[] phraseIdsArr = cursorToArrInt(cursor, search_str);
         if (phraseIdsArr==null)
         {
             Toast.makeText(_context, "Phrase not found", Toast.LENGTH_SHORT).show();
-            //return null;
         }
         String phraseIds = listOfTexts(phraseIdsArr);
         cursor=_sqLiteDatabase.rawQuery("SELECT * " +
@@ -284,6 +273,7 @@ public abstract class SQLfunctions {
         return new PhraseData().cursorToArrPhrase(cursor, phraseIdsArr);
     }
 
+    //Return information about phrase in all texts
     public static ArrayList<PhraseData> phraseDataInAllTexts(String[] search_str) {
         String phrase = listOfWords(search_str);
         int[] phraseIdsArr=cursorToArrInt(_sqLiteDatabase.rawQuery("SELECT _id, word " +
@@ -301,6 +291,7 @@ public abstract class SQLfunctions {
         return new PhraseData().cursorToArrPhrase(cursor, phraseIdsArr);
     }
 
+    //Convert array of text ids to list(x, y,...)
     public static String listOfTexts(int[] text_id_arr) {
         String arg;
         arg = Arrays.toString(Arrays.copyOf(text_id_arr, text_id_arr.length));
@@ -308,6 +299,8 @@ public abstract class SQLfunctions {
         arg = arg.replace("]", ")");
         return arg;
     }
+
+        //Convert array of words to list(x, y,...)
     public static String listOfWords(String[] words_arr) {
         String arg;
         arg = Arrays.toString(Arrays.copyOf(words_arr, words_arr.length ));
@@ -317,6 +310,7 @@ public abstract class SQLfunctions {
         return arg;
     }
 
+        //Reorder word_id by order words in phrase
     private static int[] cursorToArrInt(Cursor cursor, String[] search_str) {
         int[] phraseIdsArr = new int[cursor.getCount()];
         if(cursor.getCount()<search_str.length)
@@ -340,21 +334,7 @@ public abstract class SQLfunctions {
         }
     }
 
-    public static HashMap<Integer, String> getTextMap() {
-        return _textMap;
-    }
-
-    public static void setTextMap(Cursor cursor) {
-        HashMap<Integer, String> textMap=new HashMap<Integer, String>();
-        cursor.moveToFirst();
-        for (;!cursor.isAfterLast(); cursor.moveToNext())
-        {
-            textMap.put(cursor.getInt(0),cursor.getString(COL_TEXT_NAME));
-        }
-
-        SQLfunctions._textMap = textMap;
-    }
-
+        //Return context of phrase
     public static String getWordPhraseContext(Integer line, Integer text_id) {
         String[] arg = new String[1];
         arg[0] = text_id.toString();
@@ -366,7 +346,7 @@ public abstract class SQLfunctions {
         return buildContext(cursor);
     }
 
-
+        //Return string with three rows include the phrase
     private static String buildContext(Cursor cursor) {
         String str_context = "...", word = "";
         cursor.moveToFirst();
@@ -396,19 +376,17 @@ public abstract class SQLfunctions {
         return str_context + "...";
     }
 
-
+        //Find and return word by source info
     public static Cursor findWordBySource(int text_id, String line_source, String word_source) {
-        Cursor cursor = _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, word " +
-                                                    "FROM Words JOIN (SELECT DISTINCT word_id " +
-                                                                    "FROM Word_Text_Rel " +
-                                                                    "WHERE text_id="+text_id+" AND " +
-                                                                            "word_text_line="+line_source+" AND " +
-                                                                            "word_position="+word_source+")ON Words._id=word_id ", null);
-
-        return cursor;
-
+        return  _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, word " +
+                                        "FROM Words JOIN (SELECT DISTINCT word_id " +
+                                                        "FROM Word_Text_Rel " +
+                                                        "WHERE text_id="+text_id+" AND " +
+                                                                "word_text_line="+line_source+" AND " +
+                                                                "word_position="+word_source+")ON Words._id=word_id ", null);
     }
 
+        !!!
     public static void insertWordToGroup(String grpName, String grpStr) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("group_name", grpName.trim());
@@ -511,16 +489,16 @@ public abstract class SQLfunctions {
             arg = listOfTexts(textIds);
 
             Cursor cursor = _sqLiteDatabase.rawQuery("SELECT text_name " +
-                    "FROM Texts " +
-                    "WHERE _id IN " + arg, null);
-            cursor.moveToFirst();
+                                                    "FROM Texts " +
+                                                    "WHERE _id IN " + arg, null);
 
-            while (cursor.isAfterLast()) {
-                textNames.concat(cursor.getString(0) + ",");
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                textNames = textNames.concat(cursor.getString(0) + ",");
                 cursor.moveToNext();
             }
-            textNames = textNames.substring(0, textNames.length() - 1);
-            statistic = new String("Statistic for texts:"+textNames+ "\n");
+            textNames = textNames.substring(0, textNames.length()-1);
+            statistic = new String("Statistic for texts "+textNames+ ": \n");
             arg=" AND text_id IN "+arg;
         }
         else {
@@ -559,6 +537,20 @@ public abstract class SQLfunctions {
         return statistic;
     }
 
+//    public static HashMap<Integer, String> getTextMap() {
+//        return _textMap;
+//    }
+//
+//    public static void setTextMap(Cursor cursor) {
+//        HashMap<Integer, String> textMap=new HashMap<Integer, String>();
+//        cursor.moveToFirst();
+//        for (;!cursor.isAfterLast(); cursor.moveToNext())
+//        {
+//            textMap.put(cursor.getInt(0),cursor.getString(COL_TEXT_NAME));
+//        }
+//
+//        SQLfunctions._textMap = textMap;
+//    }
 
 }
 

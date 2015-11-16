@@ -1,5 +1,6 @@
 package com.peter.vladimir.concordance;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -30,8 +31,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    //TODO statistics!!!
-    //TODO delete text not refresh list of texts
+    //TODO ???
     private static final String TAG = "MainActivity";
     private EditText et_texts_name;
     private EditText et_auth_name;
@@ -39,15 +39,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DatePicker dp_publish;
     private Button btn_search;
     private Button btn_load;
-    private ListView list_texts;
-    private Cursor cursor_texts;
-    private DBHelper dbHelper;
-    private MyCursorAdapter listAdapter;
+    private static ListView list_texts;
+    private static Cursor cursor_texts;
+    private static MyCursorAdapter listAdapter;
     private StringBuilder[] text_data = new StringBuilder[4];
+    private static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         setContentView(R.layout.activity_main);
         setTitle(R.string.texts_title);
         et_texts_name = (EditText) findViewById(R.id.et_txt_name);
@@ -64,9 +65,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void refreshTextList() {
+    public static void refreshTextList() {
         cursor_texts = SQLfunctions.searchAllTexts();
-        listAdapter = new MyCursorAdapter(getApplicationContext(), cursor_texts, MyCursorAdapter.ID_LIST_TEXT_ITEM);
+        listAdapter = new MyCursorAdapter(context , cursor_texts, MyCursorAdapter.ID_LIST_TEXT_ITEM);
         list_texts.setAdapter(listAdapter);
     }
 
@@ -187,4 +188,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return noerror_status;
     }
+
 }

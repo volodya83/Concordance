@@ -136,8 +136,8 @@ public class MyCursorAdapter extends CursorAdapter {
             ibtn_delete = (ImageButton) view.findViewById(R.id.ibtn_delete);
             ibtn_delete.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    int deletedRows = SQLfunctions.deleteText(_id);
-                    Toast.makeText(_context, "deleted_rows= " + deletedRows, Toast.LENGTH_SHORT).show();
+                    SQLfunctions.deleteText(_id);
+                    MainActivity.refreshTextList();
                 }
             });
         }
