@@ -29,9 +29,9 @@ public class StatisticActivity extends AppCompatActivity {
 
     private void displayStatistic() {
         if (_textSize==0){
-            _statistic = SQLfunctions.getStatisticAllTexts();
+            _statistic = SQLfunctions.getTextStatistic(null);
         }else {
-            _statistic = SQLfunctions.getStatistic(_textIds);
+            _statistic = SQLfunctions.getTextStatistic(_textIds);
         }
     }
 

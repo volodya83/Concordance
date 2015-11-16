@@ -208,9 +208,9 @@ public abstract class SQLfunctions {
 
     public static Cursor searchTexts(String[] arg) {
         Cursor cursor = _sqLiteDatabase.rawQuery("SELECT _id, text_name, author_name, text_date " +
-                                                 "FROM ( SELECT text_id, GROUP_CONCAT(author_name) AS author_name " +
-                                                        "FROM Authors GROUP BY text_id) JOIN Texts ON text_id=_id " +
-                                                        "WHERE text_name LIKE ? AND author_name LIKE ?", arg);
+                "FROM ( SELECT text_id, GROUP_CONCAT(author_name) AS author_name " +
+                "FROM Authors GROUP BY text_id) JOIN Texts ON text_id=_id " +
+                "WHERE text_name LIKE ? AND author_name LIKE ?", arg);
         return cursor;
     }
 
@@ -249,28 +249,28 @@ public abstract class SQLfunctions {
     }
 
     public static Cursor wordDataInTexts(String arg, String[] search_str) {
-        Cursor cursor=_sqLiteDatabase.rawQuery( "SELECT text_id, text_name, word_text_line, word_position, Word_Text_Rel._id " +
-                                                "FROM Word_Text_Rel JOIN Texts ON text_id=Texts._id "+
-                                                "WHERE word_id IN (SELECT _id " +
-                                                                  "FROM Words " +
-                                                                  "WHERE word=? AND text_id IN "+arg+")" , search_str);
+        Cursor cursor=_sqLiteDatabase.rawQuery("SELECT text_id, text_name, word_text_line, word_position, Word_Text_Rel._id " +
+                "FROM Word_Text_Rel JOIN Texts ON text_id=Texts._id " +
+                "WHERE word_id IN (SELECT _id " +
+                "FROM Words " +
+                "WHERE word=? AND text_id IN " + arg + ")", search_str);
         return cursor;
     }
 
     public static Cursor wordDataInAllText(String[] search_str) {
-        Cursor cursor=_sqLiteDatabase.rawQuery( "SELECT text_id, text_name, word_text_line, word_position, Word_Text_Rel._id " +
-                                                "FROM Word_Text_Rel JOIN Texts ON text_id=Texts._id "+
-                                                "WHERE word_id IN (SELECT _id " +
-                                                                  "FROM Words " +
-                                                                  "WHERE word=?)" , search_str);
+        Cursor cursor=_sqLiteDatabase.rawQuery("SELECT text_id, text_name, word_text_line, word_position, Word_Text_Rel._id " +
+                "FROM Word_Text_Rel JOIN Texts ON text_id=Texts._id " +
+                "WHERE word_id IN (SELECT _id " +
+                "FROM Words " +
+                "WHERE word=?)", search_str);
         return cursor;
     }
 
     public static ArrayList<PhraseData> phraseDataInTexts(String[] search_str, String texts) {
         String phrase = listOfWords(search_str);
         Cursor cursor = _sqLiteDatabase.rawQuery("SELECT _id, word " +
-                                                "FROM Words " +
-                                                "WHERE word IN " + phrase, null);
+                "FROM Words " +
+                "WHERE word IN " + phrase, null);
         int[] phraseIdsArr=cursorToArrInt(cursor, search_str);
         if (phraseIdsArr==null)
         {
@@ -503,18 +503,39 @@ public abstract class SQLfunctions {
 
     }
 
-    public static String getStatisticAllTexts() {
-        String statistic = new String("Statistic for all texts: \n");
+    public static String getTextStatistic(int[] textIds) {
+        String statistic;
+        String arg="";
+        if(textIds!=null) {
+            String textNames = "";
+            arg = listOfTexts(textIds);
+
+            Cursor cursor = _sqLiteDatabase.rawQuery("SELECT text_name " +
+                    "FROM Texts " +
+                    "WHERE _id IN " + arg, null);
+            cursor.moveToFirst();
+
+            while (cursor.isAfterLast()) {
+                textNames.concat(cursor.getString(0) + ",");
+                cursor.moveToNext();
+            }
+            textNames = textNames.substring(0, textNames.length() - 1);
+            statistic = new String("Statistic for texts:"+textNames+ "\n");
+            arg=" AND text_id IN "+arg;
+        }
+        else {
+            statistic = new String("Statistic for all texts: \n");
+        }
         Cursor cursor = _sqLiteDatabase.rawQuery("SELECT AVG(word_size) AS average " +
                                                  "FROM Word_Text_Rel " +
-                                                 "WHERE word_text_type <> 4 ", null);
+                                                 "WHERE word_text_type <> 4 " + arg, null);
         cursor.moveToFirst();
         statistic = statistic.concat("average size of word: "+cursor.getInt(0)+"\n");
 
         cursor = _sqLiteDatabase.rawQuery(  "SELECT AVG(line_size) " +
                                             "FROM " +"( SELECT SUM(word_size) AS line_size " +
                                                         "FROM Word_Text_Rel " +
-                                                        "WHERE word_text_type <> 4 " +
+                                                        "WHERE word_text_type <> 4 "  +arg +
                                                         "GROUP BY word_text_line, text_id )", null);
         cursor.moveToFirst();
         statistic = statistic.concat("average size of line: "+cursor.getInt(0)+"\n");
@@ -522,17 +543,23 @@ public abstract class SQLfunctions {
         cursor = _sqLiteDatabase.rawQuery(  "SELECT AVG(sentence_size) " +
                                             "FROM " +"( SELECT SUM(word_size) AS sentence_size " +
                                                         "FROM Word_Text_Rel " +
-                                                        "WHERE word_text_type <> 4 " +
+                                                        "WHERE word_text_type <> 4 " + arg +
                                                         "GROUP BY word_text_sentence, text_id )", null);
         cursor.moveToFirst();
         statistic = statistic.concat("average size of sentence: "+cursor.getInt(0)+"\n");
+
+        cursor = _sqLiteDatabase.rawQuery(  "SELECT AVG(sentence_size) " +
+                "FROM " +"( SELECT SUM(word_size) AS sentence_size " +
+                "FROM Word_Text_Rel " +
+                "WHERE word_text_type <> 4 " + arg +
+                "GROUP BY text_id )", null);
+        cursor.moveToFirst();
+        statistic = statistic.concat("average number of letters in all texts : "+cursor.getInt(0)+"\n");
+
         return statistic;
     }
 
-    public static String getStatistic(int[] textIds) {
 
-        return null;
-    }
 }
 
 
