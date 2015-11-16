@@ -30,7 +30,7 @@ private Context _context;
         final String CREATE_TABLE_WORDS ="CREATE TABLE Words (" +
                 "_id integer NOT NULL PRIMARY KEY AUTOINCREMENT," +
                 "word text UNIQUE," +
-                "word_type text" +
+                "word_type text " +
                 ");";
         final String CREATE_TABLE_TEXTS = "CREATE TABLE Texts (" +
                 "_id integer NOT NULL PRIMARY KEY AUTOINCREMENT," +
@@ -63,8 +63,10 @@ private Context _context;
                 "word_id integer NOT NULL, " +
                 "text_id integer NOT NULL, " +
                 "word_text_line integer, " +
+                "word_text_sentence, " +
                 "word_text_type integer, " +
                 "word_position integer, " +
+                "word_size integer, " +
                 "FOREIGN KEY(text_id) REFERENCES Texts ( text_id ) " +
                 ");";
         final String CREATE_TRIGGER_WORD_TEXT_REL = "CREATE TRIGGER Word_Text_Rel_Trigger01 " +

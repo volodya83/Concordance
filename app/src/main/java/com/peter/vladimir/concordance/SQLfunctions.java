@@ -44,7 +44,7 @@ public abstract class SQLfunctions {
         char curChar;
         int word_type = 0;
         int end_word = 0;
-        int cur_size = 0;
+        int cur_size = 0, sent_num=1;
         _sqLiteDatabase.beginTransaction();
         for (int i = 0; i < text.length(); i++) {
             curChar = text.charAt(i);
@@ -76,7 +76,7 @@ public abstract class SQLfunctions {
                     if (word_type == SYMBOL)
                         word_type = NUMBER;
                     _word_position++;
-                    addWordToDB(word, word_type);
+                    addWordToDB(word, word_type, cur_size, sent_num);
                     word = "";
                 }
                 cur_size = 0;
@@ -91,6 +91,7 @@ public abstract class SQLfunctions {
                         if (text.charAt(i + 1) == ' ') {
                             addSymbolToDB(13);
                         } else addSymbolToDB(0);
+                        sent_num++;
                         break;
                     }
                     case ',': {
@@ -181,22 +182,20 @@ public abstract class SQLfunctions {
         contentValues.put("word_text_line", _line);
         contentValues.put("word_position", 0);
         long answer = _sqLiteDatabase.insert(TABLE_WORD_TEXT_REL, "", contentValues);
-//        if (answer == (-1))
-//            Toast.makeText(_context, "addSymbolToDB=-1", Toast.LENGTH_SHORT).show();
     }
 
-    private static void addWordToDB(String word, int word_type) {
+    private static void addWordToDB(String word, int word_type, int word_size, int sent_num) {
         word = word.toLowerCase();
         Cursor word_id_cursor;
         ContentValues contentValues = new ContentValues();
         contentValues.put("word_id", word);
         contentValues.put("text_id", _cur_text_id);
         contentValues.put("word_text_type", word_type);
+        contentValues.put("word_size", word_size);
+        contentValues.put("word_text_sentence", sent_num);
         contentValues.put("word_text_line", _line);
         contentValues.put("word_position", _word_position);
         long answer2 = _sqLiteDatabase.insert(TABLE_WORD_TEXT_REL, "", contentValues);
-//        if (answer2 == (-1))
-//            Toast.makeText(_context, "addWordToDB WORD_TEXT_REL=-1 word=" + word, Toast.LENGTH_SHORT).show();
     }
 
     public static Cursor searchAllTexts() {
@@ -221,8 +220,6 @@ public abstract class SQLfunctions {
         Cursor cursor = _sqLiteDatabase.rawQuery("SELECT word, word_text_type, word_text_line " +
                                                  "FROM Words JOIN Word_Text_Rel ON Words._id=Word_Text_Rel.word_id " +
                                                  "WHERE Word_Text_Rel.text_id=? ", arg);
-//                Cursor cursor=_sqLiteDatabase.rawQuery("SELECT _id, word_id, text_id "+
-//                                                "FROM Word_Text_Rel ", null);
         return cursor;
     }
 
@@ -507,8 +504,29 @@ public abstract class SQLfunctions {
     }
 
     public static String getStatisticAllTexts() {
+        String statistic = new String("Statistic for all texts: \n");
+        Cursor cursor = _sqLiteDatabase.rawQuery("SELECT AVG(word_size) AS average " +
+                                                 "FROM Word_Text_Rel " +
+                                                 "WHERE word_text_type <> 4 ", null);
+        cursor.moveToFirst();
+        statistic = statistic.concat("average size of word: "+cursor.getInt(0)+"\n");
 
-        return null;
+        cursor = _sqLiteDatabase.rawQuery(  "SELECT AVG(line_size) " +
+                                            "FROM " +"( SELECT SUM(word_size) AS line_size " +
+                                                        "FROM Word_Text_Rel " +
+                                                        "WHERE word_text_type <> 4 " +
+                                                        "GROUP BY word_text_line, text_id )", null);
+        cursor.moveToFirst();
+        statistic = statistic.concat("average size of line: "+cursor.getInt(0)+"\n");
+
+        cursor = _sqLiteDatabase.rawQuery(  "SELECT AVG(sentence_size) " +
+                                            "FROM " +"( SELECT SUM(word_size) AS sentence_size " +
+                                                        "FROM Word_Text_Rel " +
+                                                        "WHERE word_text_type <> 4 " +
+                                                        "GROUP BY word_text_sentence, text_id )", null);
+        cursor.moveToFirst();
+        statistic = statistic.concat("average size of sentence: "+cursor.getInt(0)+"\n");
+        return statistic;
     }
 
     public static String getStatistic(int[] textIds) {

@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    //TODO statistics!!!
+    //TODO delete text not refresh list of texts
     private static final String TAG = "MainActivity";
     private EditText et_texts_name;
     private EditText et_auth_name;

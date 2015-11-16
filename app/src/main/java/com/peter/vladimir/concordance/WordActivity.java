@@ -44,13 +44,13 @@ public class WordActivity extends AppCompatActivity implements View.OnClickListe
         setTitle(R.string.words_title);
 
         et_search_word = (EditText) findViewById(R.id.et_search_word);
-        if (getIntent().hasExtra("strContent")){
+        if (getIntent().hasExtra("strContent")) {
             String strContent = getIntent().getExtras().getString("strContent");
             et_search_word.setText(strContent);
         }
         tv_word_data_info = (TextView) findViewById(R.id.tv_word_data_info);
-        et_line_in_source = (EditText)findViewById(R.id.et_line_in_source);
-        et_word_in_source = (EditText)findViewById(R.id.et_word_in_sorce);
+        et_line_in_source = (EditText) findViewById(R.id.et_line_in_source);
+        et_word_in_source = (EditText) findViewById(R.id.et_word_in_sorce);
         ibtn_search_word = (ImageButton) findViewById(R.id.ibtn_search_word);
         ibtn_search_word.setOnClickListener(this);
         lv_texts = (ListView) findViewById(R.id.lv_texts_in_words);
@@ -93,12 +93,14 @@ public class WordActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.mbtn_statistic: {
                 text_id_arr = listAdapter.get_text_id_arr();
                 text_size = text_id_arr[text_id_arr.length - 1];
-                Toast.makeText(this, "Statistic for "+text_size+" texts", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, StatisticActivity.class);
-                intent.putExtra("text_id", text_id_arr);
-                intent.putExtra("text_size", text_size);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                this.startActivity(intent);
+                if (text_size != null) {
+                    Toast.makeText(this, "Statistic for " + text_size + " texts", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, StatisticActivity.class);
+                    intent.putExtra("text_id", text_id_arr);
+                    intent.putExtra("text_size", text_size);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    this.startActivity(intent);
+                } else Toast.makeText(this, "No texts loaded", Toast.LENGTH_SHORT).show();
                 break;
             }
         }
@@ -122,18 +124,17 @@ public class WordActivity extends AppCompatActivity implements View.OnClickListe
 
         text_id_arr = listAdapter.get_text_id_arr();
         text_size = text_id_arr[text_id_arr.length - 1];
-        text_id_arr=Arrays.copyOf(text_id_arr, text_id_arr.length-1);
-        if (line_source.length()>0 && word_source.length()>0){
-            if (text_size!=1){
-                Toast.makeText(this,"To search word by source data you need select only one text", Toast.LENGTH_SHORT).show();
-            }else{
+        text_id_arr = Arrays.copyOf(text_id_arr, text_id_arr.length - 1);
+        if (line_source.length() > 0 && word_source.length() > 0) {
+            if (text_size != 1) {
+                Toast.makeText(this, "To search word by source data you need select only one text", Toast.LENGTH_SHORT).show();
+            } else {
                 tv_word_data_info.setText("Word by source");
-                    cursor_words = SQLfunctions.findWordBySource(text_id_arr[0], line_source, word_source);
-                    wordListAdapter = new MyCursorAdapter(getApplicationContext(), cursor_words, MyCursorAdapter.ID_LIST_FOUND_WORD_ITEM);
-                    lv_found_words.setAdapter(wordListAdapter);
+                cursor_words = SQLfunctions.findWordBySource(text_id_arr[0], line_source, word_source);
+                wordListAdapter = new MyCursorAdapter(getApplicationContext(), cursor_words, MyCursorAdapter.ID_LIST_FOUND_WORD_ITEM);
+                lv_found_words.setAdapter(wordListAdapter);
             }
-        }
-        else if (search_str.length == 0) {
+        } else if (search_str.length == 0) {
             tv_word_data_info.setText("Words list");
             if (text_size != 0) {
                 String arg = SQLfunctions.listOfTexts(text_id_arr);
