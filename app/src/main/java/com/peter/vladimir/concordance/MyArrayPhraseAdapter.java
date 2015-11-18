@@ -12,6 +12,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Volodya on 30-Sep-15.
@@ -21,6 +23,7 @@ public class MyArrayPhraseAdapter extends ArrayAdapter<PhraseData> {
     private ArrayList<PhraseData> _listPhraseData;
     static Context _context;
     static int _resource;
+
 
     public MyArrayPhraseAdapter(Context context, int resource, List<PhraseData> objects) {
         super(context, resource, objects);

@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ public abstract class SQLfunctions {
             TABLE_AUTHORS = "Authors", TABLE_GROUPS = "Groups", TABLE_RELATIONS = "Relations", TABLE_PHRASES="Phrases";
     final static int ALL_CAPITAL = 1, ONE_CAPITAL = 2, ALL_SMALL = 3, SYMBOL = 4, NUMBER = 5;
     private static final int NO_ID = 0;
+    private static final String LOG_TAG = SQLfunctions.class.toString();
     private static DBHelper dbHelper;
     private static int _line;
     private static int _word_position;
@@ -30,6 +32,7 @@ public abstract class SQLfunctions {
     private static long _cur_text_id;
     private static Context _context;
     private static HashMap<Integer, String> _textMap;
+    private static long startTimer, endTimer;
 
     public static void setContext(Context context) {
         dbHelper = new DBHelper(context);
@@ -339,9 +342,10 @@ public abstract class SQLfunctions {
         String[] arg = new String[1];
         arg[0] = text_id.toString();
         String lines = "("+(line-1)+","+line+","+(line+1)+")";
+        startTimer=System.nanoTime();
         Cursor cursor = _sqLiteDatabase.rawQuery("SELECT word, word_text_type " +
-                "FROM Words JOIN Word_Text_Rel ON Words._id=Word_Text_Rel.word_id " +
-                "WHERE Word_Text_Rel.text_id=? AND Word_Text_Rel.word_text_line IN "+lines, arg);
+                                                "FROM Words JOIN Word_Text_Rel ON Words._id=Word_Text_Rel.word_id " +
+                                                "WHERE Word_Text_Rel.text_id=? AND Word_Text_Rel.word_text_line IN "+lines, arg);
 
         return buildContext(cursor);
     }
@@ -350,6 +354,8 @@ public abstract class SQLfunctions {
     private static String buildContext(Cursor cursor) {
         String str_context = "...", word = "";
         cursor.moveToFirst();
+        endTimer=System.nanoTime();
+        Log.d(LOG_TAG, "Timer for query getWordPhraseContext="+(endTimer-startTimer));
         while (!cursor.isAfterLast()) {
             word = cursor.getString(0);
 
@@ -373,6 +379,7 @@ public abstract class SQLfunctions {
             }
             str_context = str_context + word;
         }
+
         return str_context + "...";
     }
 
@@ -477,11 +484,11 @@ public abstract class SQLfunctions {
     //from text
     public static Cursor groupDataInText(String groupName, String arg) {
         String wordIdList ="(SELECT Words._id, word_str " +
-                "FROM Groups LEFT OUTER JOIN Words ON word_str=word " +
-                "WHERE group_name='"+groupName+"' ) ";
+                            "FROM Groups LEFT OUTER JOIN Words ON word_str=word " +
+                            "WHERE group_name='"+groupName+"' ) ";
         String wordRel="( SELECT text_name, word_text_line, word_position, word_id " +
-                " FROM Word_Text_Rel JOIN Texts ON Word_Text_Rel.text_id=Texts._id " +
-                " WHERE Texts._id IN "+arg+")";
+                            " FROM Word_Text_Rel JOIN Texts ON Word_Text_Rel.text_id=Texts._id " +
+                            " WHERE Texts._id IN "+arg+")";
         return _sqLiteDatabase.rawQuery("SELECT word_str, text_name, word_text_line, word_position " +
                 "FROM "+wordIdList+" AS Wil LEFT OUTER JOIN "+wordRel+" AS Wrel ON Wil._id=Wrel.word_id ", null);
 
@@ -534,15 +541,31 @@ public abstract class SQLfunctions {
         statistic = statistic.concat("average size of sentence: "+cursor.getInt(0)+"\n");
 
         cursor = _sqLiteDatabase.rawQuery(  "SELECT AVG(sentence_size) " +
-                "FROM " +"( SELECT SUM(word_size) AS sentence_size " +
-                "FROM Word_Text_Rel " +
-                "WHERE word_text_type <> 4 " + arg +
-                "GROUP BY text_id )", null);
+                                            "FROM ( SELECT SUM(word_size) AS sentence_size " +
+                                                    "FROM Word_Text_Rel " +
+                                                    "WHERE word_text_type <> 4 " + arg +
+                                                    "GROUP BY text_id )", null);
         cursor.moveToFirst();
         statistic = statistic.concat("average number of letters in all texts : "+cursor.getInt(0)+"\n");
 
         return statistic;
     }
+        public static HashMap<Integer, String> getTextMap() {
+        return _textMap;
+    }
+
+    public static void setTextMap(Cursor cursor) {
+        HashMap<Integer, String> textMap=new HashMap<Integer, String>();
+        cursor.moveToFirst();
+        for (;!cursor.isAfterLast(); cursor.moveToNext())
+        {
+            textMap.put(cursor.getInt(0),cursor.getString(COL_TEXT_NAME));
+        }
+
+        SQLfunctions._textMap = textMap;
+    }
+
+
 }
 
 

@@ -31,7 +31,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    //TODO list of improvments
+    //TODO list of improvements
+    //Insert to DB list of symbols to reduce amount of transaction to table Words.
+    //Merge all words inserting for new text to one transaction
+    //Beside join on big tables we done before few queries to get smaller tables with relevant rows and attributes (groupDataInAllText, groupDataInText, findWordBySource)
+    //
+
+
     private static final String TAG = "MainActivity";
     private EditText et_texts_name;
     private EditText et_auth_name;
