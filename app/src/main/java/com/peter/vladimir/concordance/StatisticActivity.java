@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 public class StatisticActivity extends AppCompatActivity {
@@ -31,7 +32,8 @@ public class StatisticActivity extends AppCompatActivity {
         if (_textSize==0){
             _statistic = SQLfunctions.getTextStatistic(null);
         }else {
-            _statistic = SQLfunctions.getTextStatistic(_textIds);
+
+            _statistic = SQLfunctions.getTextStatistic(Arrays.copyOf(_textIds, _textIds.length-1));
         }
     }
 

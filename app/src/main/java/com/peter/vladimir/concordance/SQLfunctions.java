@@ -385,15 +385,14 @@ public abstract class SQLfunctions {
                                                                 "word_text_line="+line_source+" AND " +
                                                                 "word_position="+word_source+")ON Words._id=word_id ", null);
     }
-
-        !!!
+    // Insert new word to table Group
     public static void insertWordToGroup(String grpName, String grpStr) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("group_name", grpName.trim());
         contentValues.put("word_str", grpStr.trim());
         _sqLiteDatabase.insert(TABLE_GROUPS, null, contentValues);
     }
-
+    // Insert new pair of words to table Relations
     public static void insertWordsToRelations(String relName, String[] words) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("relation_name", relName.trim());
@@ -401,62 +400,68 @@ public abstract class SQLfunctions {
         contentValues.put("relation_word2", words[1].trim());
         _sqLiteDatabase.insert(TABLE_RELATIONS, null, contentValues);
     }
-
+    // Insert new phrase to table Phrases
     public static void insertPhrase(String phrase) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("phrase_str", phrase.trim());
         _sqLiteDatabase.insert(TABLE_PHRASES, null, contentValues);
     }
 
+    // Return list of groups
     public static Cursor getGroups(){
         return _sqLiteDatabase.rawQuery("SELECT * " +
                                         "FROM Groups " +
                                         "GROUP BY group_name ", null);
     }
 
+    // Return list of relations
     public static Cursor getRelations(){
         return _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, relation_name " +
                                         "FROM Relations " +
                                         "GROUP BY relation_name ", null);
     }
-
+    // Return list of phrases
     public static Cursor getPhrases(){
         return _sqLiteDatabase.rawQuery("SELECT * " +
                                         "FROM Phrases ", null);
     }
 
+    //Return list of words from specific group
     public static Cursor getGroupContent(String group_name) {
         return _sqLiteDatabase.rawQuery("SELECT _id, word_str " +
                                         "FROM Groups " +
                                         "WHERE group_name='"+group_name+"'", null);
     }
-
+    //Delete specific word
     public static void deleteContentInGroup(int id) {
         _sqLiteDatabase.delete(TABLE_GROUPS, "_id="+id,null );
     }
-
+    //Delete group
     public static void deleteGroup(String group_name) {
         _sqLiteDatabase.delete(TABLE_GROUPS, "group_name='"+group_name+"'",null );
     }
-
+    //Delete phrase
     public static void deletePhrase(int id) {
         _sqLiteDatabase.delete(TABLE_PHRASES, "_id="+id,null );
     }
-
+    //Return list of pairs from specific relation
     public static Cursor getRelationContent(String relation_name) {
         return _sqLiteDatabase.rawQuery("SELECT _id, relation_word1, relation_word2 " +
                                         "FROM Relations " +
                                         "WHERE relation_name='"+relation_name+"'", null);
     }
-
+    //Delete  Relation
     public static void deleteRelation(String relation_name) {
         _sqLiteDatabase.delete(TABLE_RELATIONS, "relation_name='"+relation_name+"'",null );
     }
 
+    //Delete one pair of words from Relation
     public static void deletePairFromRelation(int id) {
         _sqLiteDatabase.delete(TABLE_RELATIONS, "_id="+id,null );
     }
 
+    //Return list with information about words in specific group
+    //from all texts
     public static Cursor groupDataInAllText(String groupName) {
         String wordIdList ="(SELECT Words._id, word_str " +
                             "FROM Groups LEFT OUTER JOIN Words ON word_str=word " +
@@ -468,7 +473,8 @@ public abstract class SQLfunctions {
 
     }
 
-
+    //Return list with information about words in specific group
+    //from text
     public static Cursor groupDataInText(String groupName, String arg) {
         String wordIdList ="(SELECT Words._id, word_str " +
                 "FROM Groups LEFT OUTER JOIN Words ON word_str=word " +
@@ -481,6 +487,7 @@ public abstract class SQLfunctions {
 
     }
 
+    //Return statistic of texts
     public static String getTextStatistic(int[] textIds) {
         String statistic;
         String arg="";
@@ -536,22 +543,6 @@ public abstract class SQLfunctions {
 
         return statistic;
     }
-
-//    public static HashMap<Integer, String> getTextMap() {
-//        return _textMap;
-//    }
-//
-//    public static void setTextMap(Cursor cursor) {
-//        HashMap<Integer, String> textMap=new HashMap<Integer, String>();
-//        cursor.moveToFirst();
-//        for (;!cursor.isAfterLast(); cursor.moveToNext())
-//        {
-//            textMap.put(cursor.getInt(0),cursor.getString(COL_TEXT_NAME));
-//        }
-//
-//        SQLfunctions._textMap = textMap;
-//    }
-
 }
 
 
