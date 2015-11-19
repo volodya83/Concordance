@@ -42,6 +42,8 @@ public abstract class SQLfunctions {
         //Separating each word of the text and insert in one transaction
     public static void loadText(StringBuilder text, StringBuilder[] text_data) {
         _cur_text_id = addTextData(text_data);
+        //test
+//        startTimer=System.nanoTime();
         _line = 1;
         String word = "";
         char curChar;
@@ -152,8 +154,12 @@ public abstract class SQLfunctions {
 
             }
         }
+//        endTimer = System.nanoTime();
+//        Log.d(LOG_TAG, "Load text timer1 = "+(endTimer-startTimer));
         _sqLiteDatabase.setTransactionSuccessful();
         _sqLiteDatabase.endTransaction();
+//        endTimer = System.nanoTime();
+//        Log.d(LOG_TAG, "Load text timer2 = "+(endTimer-startTimer));
     }
         //Inserting text information in Texts and Authors tables
     private static long addTextData(StringBuilder[] text_data) {
@@ -199,7 +205,7 @@ public abstract class SQLfunctions {
         Cursor cursor = _sqLiteDatabase.rawQuery("SELECT _id, text_name, author_name, text_date " +
                                                 "FROM ( SELECT text_id, GROUP_CONCAT(author_name) AS author_name " +
                                                         "FROM Authors GROUP BY text_id) JOIN Texts ON text_id=_id", null);
-        //setTextMap(cursor);
+        setTextMap(cursor);
         return cursor;
     }
         //Return list of texts that found by name of text or author
@@ -242,19 +248,19 @@ public abstract class SQLfunctions {
         //Return information about word in specific texts
     public static Cursor wordDataInTexts(String arg, String[] search_str) {
         return _sqLiteDatabase.rawQuery("SELECT text_id, text_name, word_text_line, word_position, Word_Text_Rel._id " +
-                "FROM Word_Text_Rel JOIN Texts ON text_id=Texts._id " +
-                "WHERE word_id IN ( SELECT _id " +
-                "FROM Words " +
-                "WHERE word=? AND text_id IN " + arg + ")", search_str);
+                                        "FROM Word_Text_Rel JOIN Texts ON text_id=Texts._id " +
+                                        "WHERE word_id IN ( SELECT _id " +
+                                                            "FROM Words " +
+                                                            "WHERE word=? AND text_id IN " + arg + ")", search_str);
     }
 
     //Return information about word in all texts
     public static Cursor wordDataInAllText(String[] search_str) {
         Cursor cursor = _sqLiteDatabase.rawQuery("SELECT text_id, text_name, word_text_line, word_position, Word_Text_Rel._id " +
-                "FROM Word_Text_Rel JOIN Texts ON text_id=Texts._id " +
-                "WHERE word_id IN (SELECT _id " +
-                "FROM Words " +
-                "WHERE word=?)", search_str);
+                                                 "FROM Word_Text_Rel JOIN Texts ON text_id=Texts._id " +
+                                                 "WHERE word_id IN ( SELECT _id " +
+                                                                    "FROM Words " +
+                                                                    "WHERE word=?)", search_str);
         return cursor;
     }
 
@@ -262,8 +268,8 @@ public abstract class SQLfunctions {
     public static ArrayList<PhraseData> phraseDataInTexts(String[] search_str, String texts) {
         String phrase = listOfWords(search_str);
         Cursor cursor = _sqLiteDatabase.rawQuery("SELECT _id, word " +
-                "FROM Words " +
-                "WHERE word IN " + phrase, null);
+                                                "FROM Words " +
+                                                "WHERE word IN " + phrase, null);
         int[] phraseIdsArr = cursorToArrInt(cursor, search_str);
         if (phraseIdsArr==null)
         {
@@ -272,7 +278,7 @@ public abstract class SQLfunctions {
         String phraseIds = listOfTexts(phraseIdsArr);
         cursor=_sqLiteDatabase.rawQuery("SELECT * " +
                                         "FROM Word_Text_Rel " +
-                                        "WHERE text_id IN " + texts + "AND word_id IN " + phraseIds, null);
+                                        "WHERE word_id IN " + phraseIds + " AND  text_id IN " + texts, null);
         return new PhraseData().cursorToArrPhrase(cursor, phraseIdsArr);
     }
 
@@ -280,8 +286,8 @@ public abstract class SQLfunctions {
     public static ArrayList<PhraseData> phraseDataInAllTexts(String[] search_str) {
         String phrase = listOfWords(search_str);
         int[] phraseIdsArr=cursorToArrInt(_sqLiteDatabase.rawQuery("SELECT _id, word " +
-                "FROM Words " +
-                "WHERE word IN " + phrase, null), search_str);
+                                                                    "FROM Words " +
+                                                                    "WHERE word IN " + phrase, null), search_str);
         if (phraseIdsArr==null)
         {
             Toast.makeText(_context, "Phrase not found", Toast.LENGTH_SHORT).show();
@@ -289,8 +295,8 @@ public abstract class SQLfunctions {
         }
         String phraseIds = listOfTexts(phraseIdsArr);
         Cursor cursor=_sqLiteDatabase.rawQuery("SELECT * " +
-                "FROM Word_Text_Rel " +
-                "WHERE word_id IN " + phraseIds, null);
+                                                "FROM Word_Text_Rel " +
+                                                "WHERE word_id IN " + phraseIds, null);
         return new PhraseData().cursorToArrPhrase(cursor, phraseIdsArr);
     }
 
@@ -345,8 +351,12 @@ public abstract class SQLfunctions {
         startTimer=System.nanoTime();
         Cursor cursor = _sqLiteDatabase.rawQuery("SELECT word, word_text_type " +
                                                 "FROM Words JOIN Word_Text_Rel ON Words._id=Word_Text_Rel.word_id " +
-                                                "WHERE Word_Text_Rel.text_id=? AND Word_Text_Rel.word_text_line IN "+lines, arg);
+                                                "WHERE Word_Text_Rel.word_text_line IN "+lines+" AND Word_Text_Rel.text_id=? ", arg);
 
+//        Cursor cursor = _sqLiteDatabase.rawQuery("SELECT word, word_text_type " +
+//                "FROM Words JOIN (SELECT word_id, word_text_type " +
+//                "FROM Word_Text_Rel " +
+//                "WHERE text_id=? AND word_text_line IN "+lines+" ) ON _id=word_id ", arg);
         return buildContext(cursor);
     }
 
@@ -388,9 +398,9 @@ public abstract class SQLfunctions {
         return  _sqLiteDatabase.rawQuery("SELECT DISTINCT _id, word " +
                                         "FROM Words JOIN (SELECT DISTINCT word_id " +
                                                         "FROM Word_Text_Rel " +
-                                                        "WHERE text_id="+text_id+" AND " +
-                                                                "word_text_line="+line_source+" AND " +
-                                                                "word_position="+word_source+")ON Words._id=word_id ", null);
+                                                        "WHERE word_text_line="+line_source+" AND " +
+                                                                "word_position="+word_source+" AND " +
+                                                                "text_id="+text_id+")ON Words._id=word_id ", null);
     }
     // Insert new word to table Group
     public static void insertWordToGroup(String grpName, String grpStr) {
@@ -490,7 +500,7 @@ public abstract class SQLfunctions {
                             " FROM Word_Text_Rel JOIN Texts ON Word_Text_Rel.text_id=Texts._id " +
                             " WHERE Texts._id IN "+arg+")";
         return _sqLiteDatabase.rawQuery("SELECT word_str, text_name, word_text_line, word_position " +
-                "FROM "+wordIdList+" AS Wil LEFT OUTER JOIN "+wordRel+" AS Wrel ON Wil._id=Wrel.word_id ", null);
+                                         "FROM "+wordIdList+" AS Wil LEFT OUTER JOIN "+wordRel+" AS Wrel ON Wil._id=Wrel.word_id ", null);
 
     }
 

@@ -1,5 +1,6 @@
 package com.peter.vladimir.concordance;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static MyCursorAdapter listAdapter;
     private StringBuilder[] text_data = new StringBuilder[4];
     private static Context context;
+    private ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_load.setOnClickListener(this);
         SQLfunctions.setContext(getApplicationContext());
         refreshTextList();
+        progress = new ProgressDialog(this);
     }
 
 
@@ -137,6 +140,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     text_data[1] = new StringBuilder(date);
                     text_data[2] = new StringBuilder(et_auth_name.getText().toString());
                     btn_search.setEnabled(false);
+                    progress.setTitle("Loading text");
+                    progress.setMessage("Parsing and loading text to DB...");
+                    progress.show();
                     new AsyncTask<StringBuilder[], Void, Void>() {
                         @Override
                         protected Void doInBackground(StringBuilder[]... params) {
@@ -149,7 +155,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             super.onPostExecute(aVoid);
                             btn_search.setEnabled(true);
                             refreshTextList();
-                            Toast.makeText(getApplicationContext(), "Text loaded", Toast.LENGTH_SHORT).show();
+                            progress.dismiss();
+                            //Toast.makeText(getApplicationContext(), "Text loaded", Toast.LENGTH_SHORT).show();
                         }
                     }.execute();
 
